@@ -11,10 +11,10 @@ void cache_init()
 		void *addr = malloc(BLOCK_SECTOR_SIZE * 4);
 		for(j=i; j<i+4; j++)
 		{
-			cache[i].addr = addr;
-			cache[i].accessed = false;
-			cache[i].dirty = false;
-			cache[i].sector_id = -1;
+			cache[j].addr = addr;
+			cache[j].accessed = false;
+			cache[j].dirty = false;
+			cache[j].sector_id = -1;
 			addr += BLOCK_SECTOR_SIZE; 
 		}
 	}
