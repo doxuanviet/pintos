@@ -4,7 +4,6 @@
 #include "devices/block.h"
 #include "threads/palloc.h"
 #include "threads/synch.h"
-#include "vm/page.h"
 #define CACHE_LIMIT 64
 
 struct cache_data
