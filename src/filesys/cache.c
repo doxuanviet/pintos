@@ -19,7 +19,7 @@ void cache_init()
 		}
 	}
 
-	lock_init(&frame_lock);
+	lock_init(&cache_lock);
 }
 
 void cache_flush_out(int cache_id)
