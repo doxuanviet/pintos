@@ -20,6 +20,7 @@ void cache_init()
 	}
 
 	lock_init(&cache_lock);
+	printf("Finish Cache initialization!\n");
 }
 
 void cache_flush_out(int cache_id)
