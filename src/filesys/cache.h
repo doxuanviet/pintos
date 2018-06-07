@@ -2,7 +2,6 @@
 #define FILESYS_CACHE_H
 
 #include "devices/block.h"
-#include "threads/palloc.h"
 #include "threads/synch.h"
 #define CACHE_LIMIT 64
 
@@ -11,6 +10,7 @@ struct cache_data
 	void *addr;								/* Physical address of the cached sector. */
 	bool accessed;
 	bool dirty;
+	int open_cnt;
 	block_sector_t sector_id;				/* Which sector is stored here. */
 };
 

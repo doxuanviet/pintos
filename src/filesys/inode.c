@@ -223,6 +223,7 @@ inode_read_at (struct inode *inode, void *buffer_, off_t size, off_t offset)
 
       int cache_id = cache_load(sector_idx);
       cache[cache_id].accessed = true;
+      cache[cache_id].open_cnt--;
       memcpy (buffer + bytes_read, cache[cache_id].addr + sector_ofs, chunk_size);
       
       /* Advance. */
@@ -270,6 +271,7 @@ inode_write_at (struct inode *inode, const void *buffer_, off_t size,
       int cache_id = cache_load(sector_idx);
       cache[cache_id].accessed = true;
       cache[cache_id].dirty = true;
+      cache[cache_id].open_cnt--;
       memcpy(cache[cache_id].addr + sector_ofs, buffer + bytes_written, chunk_size);
 
       /* Advance. */

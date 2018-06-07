@@ -5,18 +5,14 @@
 
 void cache_init()
 {
-	int i,j;
-	for(i=0; i<CACHE_LIMIT; i+=4)
+	int i;
+	for(i=0; i<CACHE_LIMIT; i++)
 	{
-		void *addr = malloc(BLOCK_SECTOR_SIZE * 4);
-		for(j=i; j<i+4; j++)
-		{
-			cache[j].addr = addr;
-			cache[j].accessed = false;
-			cache[j].dirty = false;
-			cache[j].sector_id = -1;
-			addr += BLOCK_SECTOR_SIZE; 
-		}
+		cache[i].addr = malloc(BLOCK_SECTOR_SIZE);
+		cache[i].accessed = false;
+		cache[i].dirty = false;
+		cache[i].open_cnt = 0;
+		cache[i].sector_id = -1;
 	}
 
 	lock_init(&cache_lock);
@@ -32,11 +28,15 @@ void cache_flush_out(int cache_id)
 
 void *cache_evict()
 {
-	// Cache eviction using second chance algorithm.
 	int i_;
+	for(i_ = 0; i_ < CACHE_LIMIT; i_++)
+			if(cache[i_].open_cnt == 0) return i_;
+
+	// Cache eviction using second chance algorithm.
 	for(i_ = 0; i_ < 2*CACHE_LIMIT; i_++)
 	{
 		int i = i_ % CACHE_LIMIT;
+		if(cache[i].open_cnt > 0) continue;
 		if(cache[i].accessed == true)
 			cache[i].accessed = false;
 		else // Found one to evict.
@@ -45,6 +45,7 @@ void *cache_evict()
 			return i;
 		}
 	}
+	return -1;
 }
 
 int cache_load(block_sector_t sector_id)
@@ -56,6 +57,7 @@ int cache_load(block_sector_t sector_id)
 		if(cache[i].sector_id == sector_id)
 		{
 			cache[i].accessed = true;
+			cache[i].open_cnt++;
 			lock_release(&cache_lock);
 			return cache[i].addr;
 		}
@@ -64,6 +66,7 @@ int cache_load(block_sector_t sector_id)
 	cache[cache_id].sector_id = sector_id;
 	cache[cache_id].accessed = false;
 	cache[cache_id].dirty = false;
+	cache[i].open_cnt++;
 	block_read (fs_device, sector_id, cache[cache_id].addr);
 	lock_release(&cache_lock);
 	return cache_id;
