@@ -8,7 +8,7 @@ void cache_init()
 	int i,j;
 	for(i=0; i<CACHE_LIMIT; i+=4)
 	{
-		void *addr = palloc_get_page(PAL_ASSERT);
+		void *addr = malloc(BLOCK_SECTOR_SIZE * 4);
 		for(j=i; j<i+4; j++)
 		{
 			cache[i].addr = addr;
