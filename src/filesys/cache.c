@@ -13,11 +13,11 @@ void cache_init()
 		cache[i].dirty = false;
 		cache[i].open_cnt = 0;
 		cache[i].sector_id = -1;
-		printf("%d at addr: %p\n", i, cache[i].addr);
+		// printf("%d at addr: %p\n", i, cache[i].addr);
 	}
 
 	lock_init(&cache_lock);
-	printf("Finish Cache initialization!\n");
+	// printf("Finish Cache initialization!\n");
 }
 
 void cache_flush_out(int cache_id)
@@ -64,14 +64,14 @@ int cache_load(block_sector_t sector_id)
 		}
 
 	int cache_id = cache_evict();
-	printf("Evict result %d\n",cache_id);
+	// printf("Evict result %d\n",cache_id);
 	cache[cache_id].sector_id = sector_id;
 	cache[cache_id].accessed = false;
 	cache[cache_id].dirty = false;
 	cache[i].open_cnt++;
 	block_read (fs_device, sector_id, cache[cache_id].addr);
 	lock_release(&cache_lock);
-	printf("Load cache at %p\n",cache[cache_id].addr);
+	// printf("Load cache at %p\n",cache[cache_id].addr);
 	return cache_id;
 }
 
