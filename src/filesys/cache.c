@@ -60,7 +60,7 @@ int cache_load(block_sector_t sector_id)
 			cache[i].accessed = true;
 			cache[i].open_cnt++;
 			lock_release(&cache_lock);
-			return cache[i].addr;
+			return i;
 		}
 
 	int cache_id = cache_evict();
