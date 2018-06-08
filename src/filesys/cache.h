@@ -7,8 +7,7 @@
 
 struct cache_data
 {
-	//void *addr;								/* Physical address of the cached sector. */
-	int addr[BLOCK_SECTOR_SIZE];
+	void *addr;								/* Physical address of the cached sector. */
 	bool accessed;
 	bool dirty;
 	int open_cnt;
