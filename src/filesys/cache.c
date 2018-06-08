@@ -64,6 +64,7 @@ int cache_load(block_sector_t sector_id)
 		}
 
 	int cache_id = cache_evict();
+	printf("Evict result %d\n",cache_id);
 	cache[cache_id].sector_id = sector_id;
 	cache[cache_id].accessed = false;
 	cache[cache_id].dirty = false;
