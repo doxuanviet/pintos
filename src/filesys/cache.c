@@ -8,7 +8,7 @@ void cache_init()
 	int i;
 	for(i=0; i<CACHE_LIMIT; i++)
 	{
-		cache[i].addr = malloc(BLOCK_SECTOR_SIZE);
+		// cache[i].addr = malloc(BLOCK_SECTOR_SIZE);
 		cache[i].accessed = false;
 		cache[i].dirty = false;
 		cache[i].open_cnt = 0;
@@ -23,7 +23,7 @@ void cache_flush_out(int cache_id)
 {
 	if(cache[cache_id].sector_id == -1) return;
 	if(cache[cache_id].dirty == true)
-		block_write(fs_device, cache[cache_id].sector_id, cache[cache_id].addr);
+		block_write(fs_device, cache[cache_id].sector_id, &cache[cache_id].addr);
 }
 
 void *cache_evict()
@@ -67,7 +67,7 @@ int cache_load(block_sector_t sector_id)
 	cache[cache_id].accessed = false;
 	cache[cache_id].dirty = false;
 	cache[i].open_cnt++;
-	block_read (fs_device, sector_id, cache[cache_id].addr);
+	block_read (fs_device, sector_id, &cache[cache_id].addr);
 	lock_release(&cache_lock);
 	return cache_id;
 }
