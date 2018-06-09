@@ -83,6 +83,7 @@ byte_to_sector (const struct inode *inode, off_t pos)
   if(!validate(tmp.ptr[pos/(128 * 512)])) printf("Checkpoint 2\n");
   block_read(fs_device, tmp.ptr[pos/(128 * 512)], &tmp);
   pos %= (128 * 512);
+  if(!validate(tmp.ptr[pos/512])) printf("Indirect error\n");
   return tmp.ptr[pos / 512];
 }
 
