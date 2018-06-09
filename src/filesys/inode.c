@@ -142,7 +142,6 @@ bool inode_expand(struct inode *ind, off_t length)
       }
   }
   // printf("Allocating double indirectly.\n");
-
   // Doubly indirect allocation.
   if(cur_sector == DIRECT_LIMIT + 1)
     free_map_allocate(1, &ind->data.ptr[DIRECT_LIMIT]);
