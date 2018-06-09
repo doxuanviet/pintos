@@ -398,8 +398,8 @@ inode_write_at (struct inode *inode, const void *buffer_, off_t size,
   if (inode->deny_write_cnt)
     return 0;
 
-  if(offset + size >= inode->data.length)
-    ASSERT(inode_expand(inode, offset + size + 1));
+  if(offset + size > inode->data.length)
+    ASSERT(inode_expand(inode, offset + size));
 
   while (size > 0) 
     {
