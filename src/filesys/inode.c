@@ -76,6 +76,7 @@ byte_to_sector (const struct inode *inode, off_t pos)
   // Answer is within direct data.
   if(pos < DIRECT_SIZE_LIMIT)
   {
+    printf("Length: %d\n",inode->data.length);
     if(!validate(inode->data.ptr[pos / 512])) printf("Direct error\n");
     return inode->data.ptr[pos / 512];
   }
