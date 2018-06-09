@@ -105,6 +105,8 @@ int estimate_expand(struct inode *ind, int length)
 bool inode_expand(struct inode *ind, off_t length)
 {
   printf("Expanding %d to %d\n", ind->data.length, length);
+  int tmp = estimate_expand(ind, length);
+  printf("Estimate expanding need %d sectors. Have only %d\n", tmp, free_map_free_space());
   if(estimate_expand(ind, length) > free_map_free_space()) return false;
   printf("Enough space\n");
 
