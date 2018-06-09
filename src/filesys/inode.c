@@ -143,7 +143,7 @@ bool inode_expand(struct inode *ind, int length)
     if(old_data_id != data_id)
     {
       if(old_data_id != -1)
-        block_write(fs_device, double_indirect.ptr[old_data_id], &cur_indirect);
+        block_write(fs_device, doubly_indirect.ptr[old_data_id], &cur_indirect);
       block_read(fs_device, doubly_indirect.ptr[data_id], &cur_indirect);
     }
 
