@@ -114,7 +114,11 @@ bool inode_expand(struct inode *ind, off_t length)
   int target_sector = bytes_to_sectors(length);
   printf("Target from %d to %d\n", cur_sector, target_sector);
   ind->data.length = length;
-  if(target_sector <= cur_sector) return true;
+  if(target_sector <= cur_sector)
+  {
+    block_write(fs_device, ind->sector, &ind->data);
+    return true;
+  }
 
   int zeroes = malloc(BLOCK_SECTOR_SIZE);
   memset(zeroes, 0, sizeof zeroes);
