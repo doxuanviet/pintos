@@ -165,7 +165,7 @@ bool inode_expand(struct inode *ind, int length)
 /* Free all the on-disk data of an inode. */
 void inode_free(struct inode *ind)
 {
-  int cur_sector = bytes_to_sectors(ind->length);
+  int cur_sector = bytes_to_sectors(ind->data.length);
   int i;
   // Free direct data.
   for(i=1; i<=DIRECT_LIMIT; i++)
