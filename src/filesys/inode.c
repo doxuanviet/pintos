@@ -32,7 +32,7 @@ struct inode_disk
 struct indirect_sector
 {
   int ptr[128];
-}
+};
 
 /* Returns the number of sectors to allocate for an inode SIZE
    bytes long. */
