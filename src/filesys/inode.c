@@ -67,11 +67,7 @@ static block_sector_t
 byte_to_sector (const struct inode *inode, off_t pos) 
 {
   ASSERT (inode != NULL);
-  if(pos >= inode->data.length)
-  {
-    printf("-1 Error\n");
-    return -1;
-  }
+  if(pos >= inode->data.length) return -1;
 
   // Answer is within direct data.
   if(pos < DIRECT_SIZE_LIMIT)
