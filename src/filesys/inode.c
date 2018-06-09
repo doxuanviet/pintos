@@ -104,7 +104,9 @@ int estimate_expand(struct inode *ind, int length)
    Also update to on-disk inode. Return true if successful. */
 bool inode_expand(struct inode *ind, int length)
 {
+  printf("Expanding %d to %d\n",ind->data.length, length);
   if(estimate_expand(ind, length) > free_map_free_space()) return false;
+  printf("Enough space\n");
 
   int cur_sector = bytes_to_sectors(ind->data.length);
   int target_sector = bytes_to_sectors(length);
@@ -114,6 +116,7 @@ bool inode_expand(struct inode *ind, int length)
   memset(zeroes, 0, sizeof zeroes);
 
   ind->data.length = length;
+  printf("Allocating directly.\n");
   // Direct allocation.
   cur_sector++;
   for(; cur_sector<=DIRECT_LIMIT; cur_sector++)
@@ -126,6 +129,7 @@ bool inode_expand(struct inode *ind, int length)
         return true;
       }
   }
+  printf("Allocating double indirectly.\n");
 
   // Doubly indirect allocation.
   if(cur_sector == DIRECT_LIMIT + 1)
