@@ -102,7 +102,7 @@ int estimate_expand(struct inode *ind, int length)
 
 /* Expand an inode to given length. Allocate on-disk memory as needed.
    Also update to on-disk inode. Return true if successful. */
-bool inode_expand(struct inode *ind, int length)
+bool inode_expand(struct inode *ind, off_t length)
 {
   printf("Hello?\n\n");
   printf("Expanding %d\n", length);
