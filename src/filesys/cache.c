@@ -69,6 +69,7 @@ int cache_load(block_sector_t sector_id)
 	cache[cache_id].accessed = false;
 	cache[cache_id].dirty = false;
 	cache[i].open_cnt++;
+	if(sector_id<0 || sector_id>10000) printf("Cache CHECKPOINTTT\n");
 	block_read (fs_device, sector_id, cache[cache_id].addr);
 	lock_release(&cache_lock);
 	// printf("Load cache at %p\n",cache[cache_id].addr);
