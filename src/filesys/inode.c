@@ -14,7 +14,7 @@
 #define MAX_FILE_SIZE 8000000
 
 #define DIRECT_LIMIT 100
-#define DIRECT_SIZE_LIMIT 512000
+#define DIRECT_SIZE_LIMIT 51200
 
 /* On-disk inode.
    Must be exactly BLOCK_SECTOR_SIZE bytes long. */
