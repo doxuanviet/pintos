@@ -118,7 +118,7 @@ bool inode_expand(struct inode *ind, off_t length)
   {
     printf("Heyy, error here! %d\n", ind->sector);
     block_write(fs_device, ind->sector, &ind->data);
-    prinf("Nope\n");
+    printf("Nope\n");
     return true;
   }
 
