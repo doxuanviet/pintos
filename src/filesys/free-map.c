@@ -50,7 +50,7 @@ free_map_release (block_sector_t sector, size_t cnt)
   ASSERT (bitmap_all (free_map, sector, cnt));
   bitmap_set_multiple (free_map, sector, cnt, false);
   bitmap_write (free_map, free_map_file);
-  used_cnt -= cnt;
+  used_bit -= cnt;
 }
 
 /* Opens the free map file and reads it from disk. */
@@ -90,5 +90,5 @@ free_map_create (void)
 
 int free_map_free_space(void)
 {
-  return bitmap_size(free_map) - used_cnt;
+  return bitmap_size(free_map) - used_bit;
 }
