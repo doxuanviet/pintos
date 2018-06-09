@@ -75,27 +75,16 @@ byte_to_sector (const struct inode *inode, off_t pos)
 
   // Answer is within direct data.
   if(pos < DIRECT_SIZE_LIMIT)
-  {
-    if(!validate(inode->data.ptr[pos / 512]))
-    {
-      printf("Convert at %d %d\n", pos, inode->data.length);
-      printf("%d\n",inode->data.ptr[pos/512]);
-      printf("Direct error\n");
-    }
     return inode->data.ptr[pos / 512];
-  }
 
   // Answer is within doubly indirect data.
   pos -= DIRECT_SIZE_LIMIT;
   struct indirect_sector tmp;
   // Read doubly indirect sector.
-  if(!validate(inode->data.ptr[DIRECT_LIMIT])) printf("Checkpoint 1\n");
   block_read(fs_device, inode->data.ptr[DIRECT_LIMIT], &tmp);
   // Read indirect sector.
-  if(!validate(tmp.ptr[pos/(128 * 512)])) printf("Checkpoint 2\n");
   block_read(fs_device, tmp.ptr[pos/(128 * 512)], &tmp);
   pos %= (128 * 512);
-  if(!validate(tmp.ptr[pos/512])) printf("Indirect error\n");
   return tmp.ptr[pos / 512];
 }
 
@@ -124,15 +113,14 @@ int estimate_expand(struct inode *ind, int length)
    Also update to on-disk inode. Return true if successful. */
 bool inode_expand(struct inode *ind, off_t length)
 {
-  printf("Expanding %d to %d\n", ind->data.length, length);
+  // printf("Expanding %d to %d\n", ind->data.length, length);
   int tmp = estimate_expand(ind, length);
-  printf("Estimate expanding need %d sectors. Have %d\n", tmp, free_map_free_space());
+  // printf("Estimate expanding need %d sectors. Have %d\n", tmp, free_map_free_space());
   if(estimate_expand(ind, length) > free_map_free_space()) return false;
-  printf("Enough space\n");
+  // printf("Enough space\n");
 
   int cur_sector = bytes_to_sectors(ind->data.length);
   int target_sector = bytes_to_sectors(length);
-  printf("Target from %d to %d\n", cur_sector, target_sector);
   ind->data.length = length;
   if(target_sector <= cur_sector)
   {
@@ -143,7 +131,7 @@ bool inode_expand(struct inode *ind, off_t length)
   int zeroes = malloc(BLOCK_SECTOR_SIZE);
   memset(zeroes, 0, sizeof zeroes);
 
-  printf("Allocating directly.\n");
+  // printf("Allocating directly.\n");
   // Direct allocation.
   cur_sector++;
   for(; cur_sector<=DIRECT_LIMIT; cur_sector++)
@@ -157,7 +145,7 @@ bool inode_expand(struct inode *ind, off_t length)
         return true;
       }
   }
-  printf("Allocating double indirectly.\n");
+  // printf("Allocating double indirectly.\n");
 
   // Doubly indirect allocation.
   if(cur_sector == DIRECT_LIMIT + 1)
@@ -165,7 +153,6 @@ bool inode_expand(struct inode *ind, off_t length)
 
   struct indirect_sector doubly_indirect, cur_indirect;
 
-  if(!validate(ind->data.ptr[DIRECT_LIMIT])) printf("Checkpoint 3\n");
   block_read(fs_device, ind->data.ptr[DIRECT_LIMIT], &doubly_indirect);
   int old_data_id = -1;
   for(; ; cur_sector++)
@@ -179,7 +166,6 @@ bool inode_expand(struct inode *ind, off_t length)
       if(old_data_id != -1)
         block_write(fs_device, doubly_indirect.ptr[old_data_id], &cur_indirect);
 
-      if(!validate(doubly_indirect.ptr[data_id])) printf("Checkpoint 4\n");
       block_read(fs_device, doubly_indirect.ptr[data_id], &cur_indirect);
     }
 
@@ -203,7 +189,6 @@ bool inode_expand(struct inode *ind, off_t length)
 void inode_free(struct inode *ind)
 {
   int cur_sector = bytes_to_sectors(ind->data.length);
-  printf("Freeing inode of size %d\n",ind->data.length);
   int i;
   // Free direct data.
   for(i=1; i<=DIRECT_LIMIT; i++)
