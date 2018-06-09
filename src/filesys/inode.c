@@ -223,7 +223,8 @@ bool
 inode_create (block_sector_t sector, off_t length)
 {
   ASSERT (length >= 0);
-  struct inode *tmp = malloc(sizeof *inode);
+  struct inode *tmp = malloc(sizeof(struct inode));
+  printf("%p of length %d\n", tmp, sizeof(struct inode));
   tmp->sector = sector;
   tmp->data.length = 0;
   if(!inode_expand(tmp, length))
