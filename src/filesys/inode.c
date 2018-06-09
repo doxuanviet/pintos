@@ -113,12 +113,12 @@ bool inode_expand(struct inode *ind, off_t length)
   int cur_sector = bytes_to_sectors(ind->data.length);
   int target_sector = bytes_to_sectors(length);
   printf("Target from %d to %d\n", cur_sector, target_sector);
+  ind->data.length = length;
   if(target_sector <= cur_sector) return true;
 
   int zeroes = malloc(BLOCK_SECTOR_SIZE);
   memset(zeroes, 0, sizeof zeroes);
 
-  ind->data.length = length;
   printf("Allocating directly.\n");
   // Direct allocation.
   cur_sector++;
