@@ -102,7 +102,7 @@ int estimate_expand(struct inode *ind, int length)
 
 /* Expand an inode to given length. Allocate on-disk memory as needed.
    Also update to on-disk inode. Return true if successful. */
-bool inode_expand(struct inode *ind, off_t length)
+bool inode_expansion(struct inode *ind, off_t length)
 {
   printf("Hello?\n\n");
   printf("Expanding %d\n", length);
@@ -228,7 +228,7 @@ inode_create (block_sector_t sector, off_t length)
   tmp->sector = sector;
   tmp->data.length = 0;
   printf("Creating inode of length %d\n", length);
-  if(!inode_expand(tmp, length))
+  if(!inode_expansion(tmp, length))
   {
     free(tmp);
     return false;
@@ -387,7 +387,7 @@ inode_write_at (struct inode *inode, const void *buffer_, off_t size,
     return 0;
 
   if(offset + size >= inode->data.length)
-    ASSERT(inode_expand(inode, offset + size + 1));
+    ASSERT(inode_expansion(inode, offset + size + 1));
 
   while (size > 0) 
     {
