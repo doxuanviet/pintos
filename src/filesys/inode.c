@@ -131,7 +131,6 @@ bool inode_expand(struct inode *ind, off_t length)
   for(; cur_sector<=DIRECT_LIMIT; cur_sector++)
   {
     free_map_allocate(1, &ind->data.ptr[cur_sector - 1]);
-    printf("Checkpoint 1: %d\n",ind->data.ptr[cur_sector - 1]);
     block_write(fs_device, ind->data.ptr[cur_sector - 1], zeroes);
     if(cur_sector == target_sector)
       {
@@ -158,15 +157,11 @@ bool inode_expand(struct inode *ind, off_t length)
     if(old_data_id != data_id)
     {
       if(old_data_id != -1)
-      {
-        printf("Checkpoint 2: %d\n",doubly_indirect.ptr[old_data_id]);
         block_write(fs_device, doubly_indirect.ptr[old_data_id], &cur_indirect);
-      }
       block_read(fs_device, doubly_indirect.ptr[data_id], &cur_indirect);
     }
 
     free_map_allocate(1, &cur_indirect.ptr[indirect_id]);
-    printf("Checkpoint 3: %d\n", cur_indirect.ptr[indirect_id]); 
     block_write(fs_device, cur_indirect.ptr[indirect_id], zeroes);
     old_data_id = data_id;
     if(cur_sector == target_sector)
