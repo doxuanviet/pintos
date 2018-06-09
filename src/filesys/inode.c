@@ -244,7 +244,6 @@ inode_create (block_sector_t sector, off_t length)
   struct inode *tmp = malloc(sizeof(struct inode));
   tmp->sector = sector;
   tmp->data.length = 0;
-  printf("Creating inode of length %d\n", length);
   if(!inode_expand(tmp, length))
   {
     free(tmp);
