@@ -70,7 +70,7 @@ byte_to_sector (const struct inode *inode, off_t pos)
 
   // Answer is within doubly indirect data.
   pos -= DIRECT_SIZE_LIMIT;
-  indirect_sector tmp;
+  struct indirect_sector tmp;
   // Read doubly indirect sector.
   block_read(fs_device, inode->data.ptr[DIRECT_LIMIT], &tmp);
   // Read indirect sector.
@@ -187,7 +187,7 @@ void inode_free(struct inode *ind)
         free_map_release(doubly_indirect.ptr[old_data_id], 1);
       block_read(fs_device, doubly_indirect.ptr[data_id], &cur_indirect);
     }
-    free_map_release(cur_indirect[indirect_id], 1);
+    free_map_release(cur_indirect.ptr[indirect_id], 1);
     if(i == cur_sector)
     {
       free_map_release(doubly_indirect.ptr[data_id], 1);
@@ -218,9 +218,9 @@ bool
 inode_create (block_sector_t sector, off_t length)
 {
   ASSERT (length >= 0);
-  struct inode *tmp = malloc(sizeof inode);
+  struct inode *tmp = malloc(sizeof(struct inode));
   tmp->sector = sector;
-  tmp->length = 0;
+  tmp->data.length = 0;
   if(!inode_expand(tmp, length))
   {
     free(tmp);
