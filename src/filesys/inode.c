@@ -104,8 +104,6 @@ int estimate_expand(struct inode *ind, int length)
    Also update to on-disk inode. Return true if successful. */
 bool inode_expand(struct inode *ind, off_t length)
 {
-  printf("Hello?\n\n");
-  printf("Expanding %d\n", length);
   printf("Expanding %d to %d\n", ind->data.length, length);
   if(estimate_expand(ind, length) > free_map_free_space()) return false;
   printf("Enough space\n");
@@ -174,6 +172,7 @@ bool inode_expand(struct inode *ind, off_t length)
 void inode_free(struct inode *ind)
 {
   int cur_sector = bytes_to_sectors(ind->data.length);
+  printf("Freeing inode of size %d\n",ind->data.length);
   int i;
   // Free direct data.
   for(i=1; i<=DIRECT_LIMIT; i++)
