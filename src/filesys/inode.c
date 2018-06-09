@@ -102,7 +102,7 @@ int estimate_expand(struct inode *ind, int length)
 
 /* Expand an inode to given length. Allocate on-disk memory as needed.
    Also update to on-disk inode. Return true if successful. */
-bool inode_expansion(struct inode *ind, off_t length)
+bool inode_expand(struct inode *ind, off_t length)
 {
   printf("Hello?\n\n");
   printf("Expanding %d\n", length);
@@ -114,7 +114,7 @@ bool inode_expansion(struct inode *ind, off_t length)
   int target_sector = bytes_to_sectors(length);
   if(target_sector <= cur_sector) return true;
 
-  int zeroes[BLOCK_SECTOR_SIZE];
+  int zeroes = malloc(BLOCK_SECTOR_SIZE);
   memset(zeroes, 0, sizeof zeroes);
 
   ind->data.length = length;
@@ -128,6 +128,7 @@ bool inode_expansion(struct inode *ind, off_t length)
     if(cur_sector == target_sector)
       {
         block_write(fs_device, ind->sector, &ind->data);
+        free(zeroes);
         return true;
       }
   }
@@ -161,6 +162,7 @@ bool inode_expansion(struct inode *ind, off_t length)
       block_write(fs_device, doubly_indirect.ptr[data_id], &cur_indirect);
       block_write(fs_device, ind->data.ptr[DIRECT_LIMIT], &doubly_indirect);
       block_write(fs_device, ind->sector, &ind->data);
+      free(zeroes);
       return true;
     }
   }
@@ -228,7 +230,7 @@ inode_create (block_sector_t sector, off_t length)
   tmp->sector = sector;
   tmp->data.length = 0;
   printf("Creating inode of length %d\n", length);
-  if(!inode_expansion(tmp, length))
+  if(!inode_expand(tmp, length))
   {
     free(tmp);
     return false;
@@ -387,7 +389,7 @@ inode_write_at (struct inode *inode, const void *buffer_, off_t size,
     return 0;
 
   if(offset + size >= inode->data.length)
-    ASSERT(inode_expansion(inode, offset + size + 1));
+    ASSERT(inode_expand(inode, offset + size + 1));
 
   while (size > 0) 
     {
