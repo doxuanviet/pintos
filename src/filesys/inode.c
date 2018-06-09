@@ -54,6 +54,11 @@ struct inode
     struct inode_disk data;
   };
 
+bool validate(int id)
+{
+  return id>=0 && id <= 10000;
+}
+
 /* Returns the block device sector that contains byte offset POS
    within INODE.
    Returns -1 if INODE does not contain data for a byte at offset
@@ -72,8 +77,10 @@ byte_to_sector (const struct inode *inode, off_t pos)
   pos -= DIRECT_SIZE_LIMIT;
   struct indirect_sector tmp;
   // Read doubly indirect sector.
+  if(!validate(inode->data.ptr[DIRECT_LIMIT])) printf("Checkpoint 1\n");
   block_read(fs_device, inode->data.ptr[DIRECT_LIMIT], &tmp);
   // Read indirect sector.
+  if(!validate(tmp.ptr[pos/(128 * 512)])) printf("Checkpoint 2\n");
   block_read(fs_device, tmp.ptr[pos/(128 * 512)], &tmp);
   pos %= (128 * 512);
   return tmp.ptr[pos / 512];
@@ -116,9 +123,7 @@ bool inode_expand(struct inode *ind, off_t length)
   ind->data.length = length;
   if(target_sector <= cur_sector)
   {
-    printf("Heyy, error here! %d\n", ind->sector);
     block_write(fs_device, ind->sector, &ind->data);
-    printf("Nope\n");
     return true;
   }
 
@@ -146,6 +151,8 @@ bool inode_expand(struct inode *ind, off_t length)
     free_map_allocate(1, &ind->data.ptr[DIRECT_LIMIT]);
 
   struct indirect_sector doubly_indirect, cur_indirect;
+
+  if(!validate(ind->data.ptr[DIRECT_LIMIT])) printf("Checkpoint 3\n");
   block_read(fs_device, ind->data.ptr[DIRECT_LIMIT], &doubly_indirect);
   int old_data_id = -1;
   for(; ; cur_sector++)
@@ -158,6 +165,8 @@ bool inode_expand(struct inode *ind, off_t length)
     {
       if(old_data_id != -1)
         block_write(fs_device, doubly_indirect.ptr[old_data_id], &cur_indirect);
+
+      if(!validate(doubly_indirect.ptr[data_id])) printf("Checkpoint 4\n");
       block_read(fs_device, doubly_indirect.ptr[data_id], &cur_indirect);
     }
 
