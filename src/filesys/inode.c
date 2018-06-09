@@ -116,6 +116,7 @@ bool inode_expand(struct inode *ind, off_t length)
   ind->data.length = length;
   if(target_sector <= cur_sector)
   {
+    printf("Heyy, error here!\n");
     block_write(fs_device, ind->sector, &ind->data);
     return true;
   }
