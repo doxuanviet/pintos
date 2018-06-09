@@ -124,8 +124,8 @@ bool inode_expand(struct inode *ind, off_t length)
     return true;
   }
 
-  int zeroes = malloc(BLOCK_SECTOR_SIZE);
-  memset(zeroes, 0, sizeof zeroes);
+  void *zeroes = malloc(BLOCK_SECTOR_SIZE);
+  memset(zeroes, 0, BLOCK_SECTOR_SIZE);
 
   // printf("Allocating directly.\n");
   // Direct allocation.
