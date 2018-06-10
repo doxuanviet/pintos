@@ -113,7 +113,6 @@ filesys_open (const char *name)
   if(dir == NULL) return NULL;
   if(file_name == NULL)
   {
-    printf("Yes, here\n");
     if((inode_get_inumber(dir_get_inode(dir))) == ROOT_DIR_SECTOR)
       return dir;
     dir_close(dir);
