@@ -175,6 +175,8 @@ bool inode_expand(struct inode *ind, off_t length)
 void inode_free(struct inode *ind)
 {
   int cur_sector = bytes_to_sectors(ind->data.length);
+  if(cur_sector == 0) return;
+  
   int i;
 
   // Free direct data.
