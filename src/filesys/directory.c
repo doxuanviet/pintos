@@ -232,7 +232,7 @@ dir_remove (struct dir *dir, const char *name)
     goto done;
 
   /* Remove inode. */
-  printf("Remove child %s from %d\n",name, dir);
+  printf("Remove child %s from %d\n",name, (inode_get_inumber(dir_get_inode(dir))));
   inode_remove (inode);
   success = true;
 
