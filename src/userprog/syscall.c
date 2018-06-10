@@ -241,7 +241,7 @@ int open (const char * file )
 {
   lock_acquire(&filesys_lock);
   struct file *f = filesys_open(file);
-  struct dir *dir;
+  struct dir *dir = NULL;
   if(f == NULL)
   {
     lock_release(&filesys_lock);
