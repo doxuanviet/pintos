@@ -124,6 +124,7 @@ bool inode_expand(struct inode *ind, off_t length)
   for(; cur_sector<=DIRECT_LIMIT; cur_sector++)
   {
     free_map_allocate(1, &ind->data.ptr[cur_sector - 1]);
+    printf("Checkpoint 1 %d\n",ind->data.ptr[cur_sector - 1]);
     block_write(fs_device, ind->data.ptr[cur_sector - 1], zeroes);
     if(cur_sector == target_sector)
       {
