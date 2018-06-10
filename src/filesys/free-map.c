@@ -40,7 +40,6 @@ free_map_allocate (size_t cnt, block_sector_t *sectorp)
   if (sector != BITMAP_ERROR)
     *sectorp = sector;
   if(sector != BITMAP_ERROR) used_bit += cnt;
-  if(sector != BITMAP_ERROR) printf("Alloc %d\n",*sectorp);
   return sector != BITMAP_ERROR;
 }
 

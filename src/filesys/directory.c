@@ -218,6 +218,7 @@ dir_remove (struct dir *dir, const char *name)
 
   /* Open inode. */
   struct inode *inode = inode_open (e.inode_sector);
+  if(bitmap_test(free_map, e.inode_sector) == false) printf("BITMAP ERRORR!\n");
   printf("Open inode %d\n",inode_get_inumber(inode));
   if (inode == NULL)
     goto done;
