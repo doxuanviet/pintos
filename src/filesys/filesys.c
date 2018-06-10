@@ -125,6 +125,7 @@ filesys_open (const char *name)
   dir_close (dir);
   free(file_name);
 
+  if(ind == NULL) return NULL;
   if(inode_isdir(ind)) return dir_open (ind);
   return file_open(ind);
 }
