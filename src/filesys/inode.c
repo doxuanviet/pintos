@@ -233,6 +233,7 @@ inode_create (block_sector_t sector, off_t length, bool is_dir)
   tmp->sector = sector;
   tmp->data.length = 0;
   tmp->data.is_dir = is_dir;
+  tmp->data.magic = INODE_MAGIC;
   tmp->data.parent = ROOT_DIR_SECTOR;
   if(!inode_expand(tmp, length))
   {
