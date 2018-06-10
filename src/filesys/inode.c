@@ -279,6 +279,7 @@ inode_open (block_sector_t sector)
   inode->deny_write_cnt = 0;
   inode->removed = false;
   block_read (fs_device, inode->sector, &inode->data);
+  if(inode->data.magic != 0x494e4f44) printf("INODE ERROR\n");
   return inode;
 }
 
