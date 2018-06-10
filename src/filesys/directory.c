@@ -227,11 +227,11 @@ dir_remove (struct dir *dir, const char *name)
   if(inode_get_inumber(inode) == ROOT_DIR_SECTOR)
     goto done;
 
-  if(inode_isdir(inode) && inode_get_open_cnt(inode) > 1)
-  {
-    printf("Checkpoint 1\n");
-    goto done;
-  }
+  // if(inode_isdir(inode) && inode_get_open_cnt(inode) > 1)
+  // {
+  //   printf("Checkpoint 1\n");
+  //   goto done;
+  // }
 
   if(inode_isdir(inode) && !dir_is_empty(inode))
   {
