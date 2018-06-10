@@ -83,10 +83,12 @@ struct dir *get_parent_dir(const char *name, char **file_name)
 bool
 filesys_create (const char *name, off_t initial_size, bool is_dir) 
 {
+  if(strlen(name) == 0) return false;
   block_sector_t inode_sector = 0;
   char *file_name = NULL;
   struct dir *dir = get_parent_dir(name, &file_name);
-  bool success = (dir != NULL && file_name != NULL
+  bool success = (dir != NULL
+                  && (file_name != NULL || (inode_get_inumber(dir_get_inode(dir))) == ROOT_DIR_SECTOR)
                   && strcmp(file_name, ".") && strcmp(file_name, "..")
                   && free_map_allocate (1, &inode_sector)
                   && inode_create (inode_sector, initial_size, is_dir)

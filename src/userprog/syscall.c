@@ -323,11 +323,21 @@ void close (int fd )
 
 bool chdir(const char *dir)
 {
-  char *file_name;
+  char *file_name = NULL;
   struct dir *new_dir = get_parent_dir(dir, &file_name);
   if(new_dir == NULL)
   {
     free(file_name);
+    return false;
+  }
+  if(file_name == NULL)
+  {
+    if((inode_get_inumber(dir_get_inode(new_dir))) == ROOT_DIR_SECTOR)
+    {
+      thread_current()->current_dir = new_dir;
+      return true;
+    }
+    dir_close(new_dir);
     return false;
   }
 
