@@ -5,6 +5,7 @@
 #include "filesys/filesys.h"
 #include "filesys/inode.h"
 #include "threads/malloc.h"
+#include "filesys/free-map.h"
 #include <bitmap.h>
 
 /* A directory. */
