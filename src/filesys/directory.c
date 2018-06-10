@@ -146,7 +146,6 @@ dir_lookup (const struct dir *dir, const char *name,
 bool
 dir_add (struct dir *dir, const char *name, block_sector_t inode_sector)
 {
-  printf("wrap around\n");
   struct dir_entry e;
   off_t ofs;
   bool success = false;
@@ -164,7 +163,6 @@ dir_add (struct dir *dir, const char *name, block_sector_t inode_sector)
 
   struct inode *child = inode_open(inode_sector);
   if(!child) goto done;
-  printf("Add child %d: %s to %d.\n",inode_sector, name, (inode_get_inumber(dir_get_inode(dir))));
   inode_set_parent(child, (inode_get_inumber(dir_get_inode(dir))));
   inode_close(child);
 
@@ -214,7 +212,6 @@ dir_remove (struct dir *dir, const char *name)
   ASSERT (dir != NULL);
   ASSERT (name != NULL);
 
-  printf("Remove dir %d name %s\n",(inode_get_inumber(dir_get_inode(dir))), name);
   /* Find directory entry. */
   if (!lookup (dir, name, &e, &ofs))
     goto done;
@@ -234,10 +231,7 @@ dir_remove (struct dir *dir, const char *name)
   // }
 
   if(inode_isdir(inode) && !dir_is_empty(inode))
-  {
-    printf("Checkpoint 2\n");
     goto done;
-  }
 
   /* Erase directory entry. */
   e.in_use = false;
@@ -245,7 +239,7 @@ dir_remove (struct dir *dir, const char *name)
     goto done;
 
   /* Remove inode. */
-  printf("Remove child %s from %d\n",name, (inode_get_inumber(dir_get_inode(dir))));
+  // printf("Remove child %s from %d\n",name, (inode_get_inumber(dir_get_inode(dir))));
   inode_remove (inode);
   success = true;
 
