@@ -209,6 +209,7 @@ dir_remove (struct dir *dir, const char *name)
   ASSERT (name != NULL);
 
   printf("Remove checkpoint 1\n");
+  printf("Remove dir %d name %s\n",(inode_get_inumber(dir_get_inode(dir))), name);
   /* Find directory entry. */
   if (!lookup (dir, name, &e, &ofs))
     goto done;
