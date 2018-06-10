@@ -167,7 +167,7 @@ dir_add (struct dir *dir, const char *name, block_sector_t inode_sector)
   struct inode *child = inode_open(inode_sector);
   if(!child) goto done;
   inode_set_parent(child, (inode_get_inumber(dir->inode)));
-  printf("Add %d (name %s) to %d\n", inode_get_inumber(child), name, inode_get_inumber(dir->inode));
+  // printf("Add %d (name %s) to %d\n", inode_get_inumber(child), name, inode_get_inumber(dir->inode));
   inode_close(child);
 
   /* Set OFS to offset of free slot.
@@ -236,7 +236,7 @@ dir_remove (struct dir *dir, const char *name)
 
   if(inode_isdir(inode) && inode_get_open_cnt(inode) > 1)
   {
-    printf("Checkpoint 3\n");
+    printf("Checkpoint 3: %d\n",inode_get_open_cnt(inode));
     goto done;
   }
 
