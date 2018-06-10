@@ -92,7 +92,7 @@ filesys_create (const char *name, off_t initial_size, bool is_dir)
                   && strcmp(file_name, ".") && strcmp(file_name, "..")
                   && free_map_allocate (1, &inode_sector)
                   && inode_create (inode_sector, initial_size, is_dir)
-                  && dir_add (dir, file_name, inode_sector));
+                  && dir_add (dir, name, inode_sector));
   if (!success && inode_sector != 0) 
     free_map_release (inode_sector, 1);
   dir_close (dir);
