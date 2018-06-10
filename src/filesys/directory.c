@@ -166,7 +166,8 @@ dir_add (struct dir *dir, const char *name, block_sector_t inode_sector)
 
   struct inode *child = inode_open(inode_sector);
   if(!child) goto done;
-  inode_set_parent(child, (inode_get_inumber(dir_get_inode(dir))));
+  inode_set_parent(child, (inode_get_inumber(dir->inode)));
+  printf("Add %s to %d\n", name, inode_get_inumber(dir->inode));
   inode_close(child);
 
   /* Set OFS to offset of free slot.
