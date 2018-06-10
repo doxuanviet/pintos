@@ -641,7 +641,7 @@ void process_remove_fd(int fd)
       list_remove(e);
       lock_acquire(&filesys_lock);
       if(file_desc->file) file_close(file_desc->file);
-      if(file_desc->dir) file_close(file_desc->dir);
+      if(file_desc->dir) dir_close(file_desc->dir);
       lock_release(&filesys_lock);
       free(file_desc);
       return;
@@ -659,7 +659,7 @@ void process_remove_fd_all()
     e = list_remove(e);
     lock_acquire(&filesys_lock);
     if(file_desc->file) file_close(file_desc->file);
-    if(file_desc->dir) file_close(file_desc->dir);
+    if(file_desc->dir) dir_close(file_desc->dir);
     lock_release(&filesys_lock);
     free(file_desc);
   }
