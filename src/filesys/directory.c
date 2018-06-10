@@ -208,21 +208,26 @@ dir_remove (struct dir *dir, const char *name)
   ASSERT (dir != NULL);
   ASSERT (name != NULL);
 
+  printf("Remove checkpoint 1\n");
   /* Find directory entry. */
   if (!lookup (dir, name, &e, &ofs))
     goto done;
 
+  printf("Remove checkpoint 2\n");
   /* Open inode. */
   inode = inode_open (e.inode_sector);
   if (inode == NULL)
     goto done;
 
+  printf("Remove checkpoint 3\n");
   if(inode_get_inumber(inode) == ROOT_DIR_SECTOR)
     goto done;
 
+  printf("Remove checkpoint 4\n");
   if(inode_isdir(inode) && inode_get_open_cnt(inode) > 1)
     goto done;
 
+  printf("Remove checkpoint 5\n");
   if(inode_isdir(inode) && !dir_is_empty(inode))
     goto done;
 
