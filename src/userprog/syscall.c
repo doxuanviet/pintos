@@ -362,7 +362,7 @@ bool mkdir(const char *dir)
 bool readdir(int fd, const char *name)
 {
   struct file_descriptor *file_desc = process_get_fd(fd);
-  if(!file_desc || file_desc->file == NULL) return false;
+  if(!file_desc || file_desc->dir == NULL) return false;
   return dir_readdir(file_desc->dir, name);
 }
 
