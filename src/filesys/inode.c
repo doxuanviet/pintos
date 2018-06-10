@@ -259,11 +259,14 @@ inode_open (block_sector_t sector)
       inode = list_entry (e, struct inode, elem);
       if (inode->sector == sector) 
         {
+          if(sector == 256) printf("Reopening 256\n");
           inode_reopen (inode);
           return inode; 
         }
     }
 
+
+  if(sector == 256) printf("New opening 256\n");
   /* Allocate memory. */
   inode = malloc (sizeof *inode);
   if (inode == NULL)
