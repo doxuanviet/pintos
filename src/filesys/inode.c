@@ -176,7 +176,7 @@ void inode_free(struct inode *ind)
 {
   int cur_sector = bytes_to_sectors(ind->data.length);
   if(cur_sector == 0) return;
-  
+
   int i;
 
   // Free direct data.
@@ -262,14 +262,11 @@ inode_open (block_sector_t sector)
       inode = list_entry (e, struct inode, elem);
       if (inode->sector == sector) 
         {
-          if(sector == 256) printf("Reopening 256\n");
           inode_reopen (inode);
           return inode; 
         }
     }
 
-
-  if(sector == 256) printf("New opening 256\n");
   /* Allocate memory. */
   inode = malloc (sizeof *inode);
   if (inode == NULL)
@@ -282,7 +279,6 @@ inode_open (block_sector_t sector)
   inode->deny_write_cnt = 0;
   inode->removed = false;
   block_read (fs_device, inode->sector, &inode->data);
-  if(inode->data.magic != 0x494e4f44) printf("INODE ERROR\n");
   return inode;
 }
 

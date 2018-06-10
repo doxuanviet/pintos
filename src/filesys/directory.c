@@ -111,7 +111,7 @@ lookup (const struct dir *dir, const char *name,
           *ofsp = ofs;
         return true;
       }
-    if(e.in_use && ep != NULL && ofsp != NULL) printf("Lookup name %s\n", e.name);
+    // if(e.in_use && ep != NULL && ofsp != NULL) printf("Lookup name %s\n", e.name);
   }
   return false;
 }
