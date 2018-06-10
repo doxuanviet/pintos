@@ -74,7 +74,8 @@ dir_close (struct dir *dir)
 {
   if (dir != NULL)
     {
-      printf("Dir closing %d\n",inode_get_inumber(dir->inode));
+      if(dir->inode != NULL)
+        printf("Dir closing %d\n",inode_get_inumber(dir->inode));
       inode_close (dir->inode);
       free (dir);
     }
