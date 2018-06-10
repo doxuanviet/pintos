@@ -246,7 +246,7 @@ int open (const char * file )
     lock_release(&filesys_lock);
     return -1;
   }
-  struct inode *ind = f->inode;
+  struct inode *ind = file_get_inode(f);
   if(ind->data.is_dir)
   {
     dir = f;
