@@ -226,10 +226,16 @@ dir_remove (struct dir *dir, const char *name)
     goto done;
 
   if(inode_isdir(inode) && inode_get_open_cnt(inode) > 1)
+  {
+    printf("Checkpoint 1\n");
     goto done;
+  }
 
   if(inode_isdir(inode) && !dir_is_empty(inode))
+  {
+    printf("Checkpoint 2\n");
     goto done;
+  }
 
   /* Erase directory entry. */
   e.in_use = false;
