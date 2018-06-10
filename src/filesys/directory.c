@@ -111,7 +111,6 @@ lookup (const struct dir *dir, const char *name,
           *ofsp = ofs;
         return true;
       }
-    // if(e.in_use && ep != NULL && ofsp != NULL) printf("Lookup name %s\n", e.name);
   }
   return false;
 }
@@ -135,6 +134,30 @@ dir_lookup (const struct dir *dir, const char *name,
     *inode = NULL;
 
   return *inode != NULL;
+}
+
+bool
+dir_is_active (const struct dir *dir) 
+{
+  if(dir == NULL) return false;
+  int cur_sector = inode_get_inumber(dir->inode);
+  if(cur_sector == ROOT_DIR_SECTOR)
+    return true;
+  struct dir *par_dir = dir_open(inode_open(dir->inode));
+  struct dir_entry e;
+  size_t ofs;
+  
+  ASSERT (dir != NULL);
+
+  for (ofs = 0; inode_read_at (par_dir->inode, &e, sizeof e, ofs) == sizeof e;
+       ofs += sizeof e)
+    if(e.inode_sector == cur_sector)
+    {
+      dir_close(par_dir);
+      return e.in_use;
+    }
+  dir_close(par_dir);
+  return false;
 }
 
 /* Adds a file named NAME to DIR, which must not already contain a
@@ -163,7 +186,7 @@ dir_add (struct dir *dir, const char *name, block_sector_t inode_sector)
 
   struct inode *child = inode_open(inode_sector);
   if(!child) goto done;
-  inode_set_parent(child, (inode_get_inumber(dir_get_inode(dir))));
+  inode_set_parent(child, inode_get_inumber(dir_get_inode(dir)));
   inode_close(child);
 
   /* Set OFS to offset of free slot.
@@ -222,12 +245,6 @@ dir_remove (struct dir *dir, const char *name)
 
   if(inode_get_inumber(inode) == ROOT_DIR_SECTOR)
     goto done;
-
-  // if(inode_isdir(inode) && inode_get_open_cnt(inode) > 1)
-  // {
-  //   printf("Checkpoint 1\n");
-  //   goto done;
-  // }
 
   if(inode_isdir(inode) && !dir_is_empty(inode))
     goto done;
