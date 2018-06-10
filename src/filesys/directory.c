@@ -188,7 +188,7 @@ bool dir_is_empty (struct inode *inode)
   struct dir_entry e;
   off_t pos;
 
-  for(pos=0; inode_read_at (inode, &e, sizeof e, pos) == sizeof e; ofs += sizeof e)
+  for(pos=0; inode_read_at (inode, &e, sizeof e, pos) == sizeof e; pos += sizeof e)
     if (e.in_use) return false;
   return true;
 }
