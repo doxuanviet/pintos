@@ -24,6 +24,11 @@ int write (int fd , const void * buffer , unsigned size );
 void seek (int fd , unsigned position );
 unsigned tell (int fd );
 void close (int fd );
+bool chdir(const char *dir);
+bool mkdir(const char *dir);
+bool readdir(int fd, const char *name);
+bool isdir(int fd);
+int inumber(int fd);
 
 struct lock filesys_lock;
 
@@ -153,29 +158,29 @@ syscall_handler (struct intr_frame *f)
   {
     get_args(esp, args, 1);
     check_valid_str(args[0]);
-    f->eas = chdir(args[0]);
+    f->eax = chdir(args[0]);
   }
   else if(call_num == SYS_MKDIR)
   {
     get_args(esp, args, 1);
     check_valid_str(args[0]);
-    f->eas = mkdir(args[0]);
+    f->eax = mkdir(args[0]);
   }
   else if(call_num == SYS_READDIR)
   {
     get_args(esp, args, 2);
     check_valid_str(args[1]);
-    f->eas = readdir(args[0], args[1]);
+    f->eax = readdir(args[0], args[1]);
   }
   else if(call_num == SYS_ISDIR)
   {
     get_args(esp, args, 1);
-    f->eas = isdir(args[0]);
+    f->eax = isdir(args[0]);
   }
   else if(call_num == SYS_INUMBER)
   {
     get_args(esp, args, 1);
-    f->eas = inumber(args[0]);
+    f->eax = inumber(args[0]);
   }
   else
   {
