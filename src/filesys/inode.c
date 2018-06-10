@@ -317,7 +317,6 @@ inode_close (struct inode *inode)
       /* Deallocate blocks if removed. */
       if (inode->removed) 
       {
-        printf("Release %d\n",inode->sector);
         free_map_release (inode->sector, 1);
         inode_free(inode);
       }
