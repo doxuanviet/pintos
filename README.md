@@ -18,7 +18,8 @@ rm -f tmp.dsk && git pull && make && pintos-mkdisk tmp.dsk --filesys-size=2 && \
 pintos -v -k -T 150 --qemu  --disk=tmp.dsk -p build/tests/filesys/extended/dir-vine -a dir-vine -p build/tests/filesys/extended/tar -a tar -- -q  -f run dir-vine
 
 rm -f tmp.dsk && git pull && make && pintos-mkdisk tmp.dsk --filesys-size=2 && \
-pintos -v -k -T 60 --qemu  --disk=tmp.dsk -p build/tests/filesys/extended/dir-rm-tree -a dir-rm-tree -p build/tests/filesys/extended/tar -a tar -- -q  -f run dir-rm-tree
+pintos -v -k -T 60 --qemu  --disk=tmp.dsk -p build/tests/filesys/extended/dir-rm-tree -a dir-rm-tree -p build/tests/filesys/extended/tar -a tar -- -q  -f run dir-rm-tree \
+&& pintos -v -k -T 60  --qemu --disk=tmp.dsk -g fs.tar -a build/tests/filesys/extended/dir-rm-tree.tar -- -q  run 'tar fs.tar /'
 
 rm -f tmp.dsk && git pull && make && pintos-mkdisk tmp.dsk --filesys-size=2 && \
 pintos -v -k -T 60 --qemu  --disk=tmp.dsk -p build/tests/filesys/extended/dir-rm-cwd -a dir-rm-cwd -p build/tests/filesys/extended/tar -a tar -- -q  -f run dir-rm-cwd

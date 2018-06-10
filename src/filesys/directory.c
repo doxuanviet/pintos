@@ -227,10 +227,7 @@ dir_remove (struct dir *dir, const char *name)
     goto done;
 
   if(inode_isdir(inode) && inode_get_open_cnt(inode) > 1)
-  {
-    // printf("Checkpoint 1\n");
     goto done;
-  }
 
   if(inode_isdir(inode) && !dir_is_empty(inode))
     goto done;
@@ -241,7 +238,7 @@ dir_remove (struct dir *dir, const char *name)
     goto done;
 
   /* Remove inode. */
-  // printf("Remove child %s from %d\n",name, (inode_get_inumber(dir_get_inode(dir))));
+  printf("Remove child %s from %d\n",name, (inode_get_inumber(dir_get_inode(dir))));
   inode_remove (inode);
   success = true;
 
