@@ -246,8 +246,7 @@ int open (const char * file )
     lock_release(&filesys_lock);
     return -1;
   }
-  struct inode *ind = file_get_inode(f);
-  if(ind->data.is_dir)
+  if(inode_isdir(file_get_inode(f)))
   {
     dir = f;
     f = NULL;
@@ -367,5 +366,5 @@ int inumber(int fd)
   struct file_descriptor *file_desc = process_get_fd(fd);
   if(!file_desc) return -1;
   if(file_desc->file) return file_desc->file->inode->sector;
-  return file_desc->dir->inode->sector;
+  return inode_get_inumber(dir_get_inode(file_desc->dir));
 }
