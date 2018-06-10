@@ -462,3 +462,8 @@ int inode_get_parent(const struct inode *inode)
 {
   return inode->data.parent;
 }
+
+void inode_set_parent(struct inode *inode, block_sector_t parent)
+{
+  inode->data.parent = parent;
+}

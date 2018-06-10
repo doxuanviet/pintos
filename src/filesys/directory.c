@@ -159,7 +159,7 @@ dir_add (struct dir *dir, const char *name, block_sector_t inode_sector)
 
   struct inode *child = inode_open(inode_sector);
   if(!child) goto done;
-  child->data.parent = dir->inode->sector;
+  inode_set_parent(child, (inode_get_inumber(dir_get_inode(dir))));
 
   /* Set OFS to offset of free slot.
      If there are no free slots, then it will be set to the
