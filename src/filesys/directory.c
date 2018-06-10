@@ -70,11 +70,13 @@ dir_reopen (struct dir *dir)
 void
 dir_close (struct dir *dir) 
 {
+  printf("Start dir_close\n");
   if (dir != NULL)
     {
       inode_close (dir->inode);
       free (dir);
     }
+  printf("End dir_close\n");
 }
 
 /* Returns the inode encapsulated by DIR. */

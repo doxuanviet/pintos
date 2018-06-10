@@ -45,12 +45,14 @@ file_reopen (struct file *file)
 void
 file_close (struct file *file) 
 {
+  printf("Start file_close\n");
   if (file != NULL)
     {
       file_allow_write (file);
       inode_close (file->inode);
       free (file); 
     }
+  printf("End file_close\n");
 }
 
 /* Returns the inode encapsulated by FILE. */
