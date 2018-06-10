@@ -147,7 +147,7 @@ filesys_open (const char *name)
 bool
 filesys_remove (const char *name) 
 {
-  char *file_name;
+  char *file_name = NULL;
   struct dir *dir = get_parent_dir(name, &file_name);
   if(dir == NULL) return false;
 

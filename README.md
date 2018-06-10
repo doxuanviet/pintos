@@ -15,6 +15,5 @@ pintos -v -k -T 60 --qemu  --disk=tmp.dsk -p tests/filesys/extended/syn-rw -a sy
 pintos -v -k -T 60  --qemu --disk=tmp.dsk -g fs.tar -a tests/filesys/extended/syn-rw.tar -- -q  run 'tar fs.tar /' < /dev/null 2> tests/filesys/extended/syn-rw-persistence.errors > tests/filesys/extended/syn-rw-persistence.output
 
 rm -f tmp.dsk
-
 git pull && make && pintos-mkdisk tmp.dsk --filesys-size=2 && \
-pintos -v -k -T 60 --qemu  --disk=tmp.dsk -p build/tests/filesys/extended/dir-rm-cwd -a dir-rm-cwd -p build/tests/filesys/extended/tar -a tar -- -q  -f run dir-rm-cwd
+pintos -v -k -T 60 --qemu  --disk=tmp.dsk -p build/tests/filesys/extended/dir-rm-root -a dir-rm-root -p build/tests/filesys/extended/tar -a tar -- -q  -f run dir-rm-root
