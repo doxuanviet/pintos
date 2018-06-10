@@ -9,8 +9,6 @@
 #include "userprog/pagedir.h"
 #include "userprog/tss.h"
 #include "userprog/syscall.h"
-#include "filesys/directory.h"
-#include "filesys/file.h"
 #include "filesys/filesys.h"
 #include "threads/flags.h"
 #include "threads/init.h"
@@ -607,13 +605,14 @@ void process_remove_child_all()
   }
 }
 
-struct file_descriptor *process_add_fd(struct file *file)
+struct file_descriptor *process_add_fd(struct file *file, struct dir *dir)
 {
   struct file_descriptor *file_desc = malloc(sizeof(struct file_descriptor));
   if(!file_desc) return NULL;
   struct thread *cur = thread_current();
   file_desc->fd = cur->fd_id++;
   file_desc->file = file;
+  file_desc->dir = dir;
   list_push_back(&cur->file_list, &file_desc->elem);
   return file_desc;
 }
@@ -640,9 +639,9 @@ void process_remove_fd(int fd)
     if(file_desc->fd == fd)
     {
       list_remove(e);
-      struct file *f = file_desc->file;
       lock_acquire(&filesys_lock);
-      if(f) file_close(f);
+      if(file_desc->file) file_close(file_desc->file);
+      if(file_desc->dir) file_close(file_desc->dir);
       lock_release(&filesys_lock);
       free(file_desc);
       return;
@@ -658,9 +657,9 @@ void process_remove_fd_all()
   {
     struct file_descriptor *file_desc = list_entry(e, struct file_descriptor, elem);
     e = list_remove(e);
-    struct file *f = file_desc->file;
     lock_acquire(&filesys_lock);
-    if(f) file_close(f);
+    if(file_desc->file) file_close(file_desc->file);
+    if(file_desc->dir) file_close(file_desc->dir);
     lock_release(&filesys_lock);
     free(file_desc);
   }

@@ -7,6 +7,7 @@
 #include "devices/shutdown.h"
 #include "process.h"
 #include "filesys/file.h"
+#include "filesys/inode.h"
 
 static void syscall_handler (struct intr_frame *);
 
@@ -148,6 +149,34 @@ syscall_handler (struct intr_frame *f)
     get_args(esp, args, 1);
     close(args[0]);
   }
+  else if(call_num == SYS_CHDIR)
+  {
+    get_args(esp, args, 1);
+    check_valid_str(args[0]);
+    f->eas = chdir(args[0]);
+  }
+  else if(call_num == SYS_MKDIR)
+  {
+    get_args(esp, args, 1);
+    check_valid_str(args[0]);
+    f->eas = mkdir(args[0]);
+  }
+  else if(call_num == SYS_READDIR)
+  {
+    get_args(esp, args, 2);
+    check_valid_str(args[1]);
+    f->eas = readdir(args[0], args[1]);
+  }
+  else if(call_num == SYS_ISDIR)
+  {
+    get_args(esp, args, 1);
+    f->eas = isdir(args[0]);
+  }
+  else if(call_num == SYS_INUMBER)
+  {
+    get_args(esp, args, 1);
+    f->eas = inumber(args[0]);
+  }
   else
   {
   	printf("Not known (yet) syscall.\n");
@@ -191,7 +220,7 @@ int wait (int pid)
 bool create (const char * file , unsigned initial_size )
 {
   lock_acquire(&filesys_lock);
-  bool res = filesys_create(file, initial_size);
+  bool res = filesys_create(file, initial_size, false);
   lock_release(&filesys_lock);
   return res;
 }
@@ -206,19 +235,25 @@ int open (const char * file )
 {
   lock_acquire(&filesys_lock);
   struct file *f = filesys_open(file);
+  struct dir *dir;
   if(f == NULL)
   {
     lock_release(&filesys_lock);
     return -1;
   }
-  struct file_descriptor *file_desc = process_add_fd(f);
+  if(f->inode->data.is_dir)
+  {
+    dir = f;
+    f = NULL;
+  }
+  struct file_descriptor *file_desc = process_add_fd(f, dir);
   lock_release(&filesys_lock);
   return file_desc->fd;
 }
 int filesize (int fd )
 {
   struct file_descriptor *file_desc = process_get_fd(fd);
-  if(!file_desc) return -1;
+  if(!file_desc || !file_desc->file) return -1;
   lock_acquire(&filesys_lock);
   int res = file_length(file_desc->file);
   lock_release(&filesys_lock);
@@ -237,7 +272,7 @@ int read (int fd , void * buffer , unsigned size )
   }
 
   struct file_descriptor *file_desc = process_get_fd(fd);
-  if(!file_desc) return 0;
+  if(!file_desc || !file_desc->file) return 0;
   lock_acquire(&filesys_lock);
   int bytes_read = file_read(file_desc->file, buffer, size);
   lock_release(&filesys_lock);
@@ -251,7 +286,7 @@ int write (int fd , const void * buffer , unsigned size )
     return size;
   }
   struct file_descriptor *file_desc = process_get_fd(fd);
-  if(!file_desc) return -1;
+  if(!file_desc || !file_desc->file) return -1;
   lock_acquire(&filesys_lock);
   int bytes_written = file_write(file_desc->file, buffer, size);
   lock_release(&filesys_lock);
@@ -260,7 +295,7 @@ int write (int fd , const void * buffer , unsigned size )
 void seek (int fd , unsigned position )
 {
   struct file_descriptor *file_desc = process_get_fd(fd);
-  if(!file_desc) return -1;
+  if(!file_desc || !file_desc->file) return -1;
   lock_acquire(&filesys_lock);
   file_seek(file_desc->file, position);
   lock_release(&filesys_lock);
@@ -268,7 +303,7 @@ void seek (int fd , unsigned position )
 unsigned tell (int fd )
 {
   struct file_descriptor *file_desc = process_get_fd(fd);
-  if(!file_desc) return -1;
+  if(!file_desc || !file_desc->file) return -1;
   lock_acquire(&filesys_lock);
   int res = file_tell(file_desc->file);
   lock_release(&filesys_lock);
@@ -279,4 +314,52 @@ void close (int fd )
   struct file_descriptor *file_desc = process_get_fd(fd);
   if(!file_desc) return -1;
   process_remove_fd(fd);
+}
+
+bool chdir(const char *dir)
+{
+  char *file_name;
+  struct dir *new_dir = get_parent_dir(dir, &file_name);
+  if(new_dir == NULL)
+  {
+    free(file_name);
+    return false;
+  }
+
+  if(strcmp(file_name, "..") == 0)
+    new_dir = dir_go_up(new_dir);
+  else new_dir = dir_go_down(new_dir, file_name);
+
+  free(file_name);
+
+  if(new_dir == NULL) return false;
+
+  thread_current()->current_dir = new_dir;
+  return true;
+}
+
+bool mkdir(const char *dir)
+{
+  return filesys_create(dir, 0, true);
+}
+
+bool readdir(int fd, const char *name)
+{
+  struct file_descriptor *file_desc = process_get_fd(fd);
+  if(!file_desc || file_desc->file == NULL) return false;
+  return dir_readdir(file_desc->dir, name);
+}
+
+bool isdir(int fd)
+{
+  struct file_descriptor *file_desc = process_get_fd(fd);
+  return file_desc && file_desc->dir != NULL;
+}
+
+int inumber(int fd)
+{
+  struct file_descriptor *file_desc = process_get_fd(fd);
+  if(!file_desc) return -1;
+  if(file_desc->file) return file_desc->file->inode->sector;
+  return file_desc->dir->inode->sector;
 }

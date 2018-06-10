@@ -21,12 +21,14 @@
 struct inode_disk
 {
   off_t length;                       /* File size in bytes. */
+  bool is_dir;
+  block_sector_t parent;
   unsigned magic;                     /* Magic number. */
   /* The rest will be pointers to data:
   [0 -> DIRECT_LIMIT) : direct data.
   DIRECT_LIMIT : doubly indirect data.
   rest: unused. */
-  int ptr[128-2];
+  int ptr[128-4];
 };
 
 struct indirect_sector
@@ -50,14 +52,8 @@ struct inode
     int open_cnt;                       /* Number of openers. */
     bool removed;                       /* True if deleted, false otherwise. */
     int deny_write_cnt;                 /* 0: writes ok, >0: deny writes. */
-    struct lock inode_lock;
     struct inode_disk data;
   };
-
-bool validate(int id)
-{
-  return id>=0 && id <= 10000;
-}
 
 /* Returns the block device sector that contains byte offset POS
    within INODE.
@@ -109,11 +105,7 @@ int estimate_expand(struct inode *ind, int length)
    Also update to on-disk inode. Return true if successful. */
 bool inode_expand(struct inode *ind, off_t length)
 {
-  // printf("Expanding %d to %d\n", ind->data.length, length);
-  int tmp = estimate_expand(ind, length);
-  // printf("Estimate expanding need %d sectors. Have %d\n", tmp, free_map_free_space());
   if(estimate_expand(ind, length) > free_map_free_space()) return false;
-  // printf("Enough space\n");
 
   int cur_sector = bytes_to_sectors(ind->data.length);
   int target_sector = bytes_to_sectors(length);
@@ -127,7 +119,6 @@ bool inode_expand(struct inode *ind, off_t length)
   void *zeroes = malloc(BLOCK_SECTOR_SIZE);
   memset(zeroes, 0, BLOCK_SECTOR_SIZE);
 
-  // printf("Allocating directly.\n");
   // Direct allocation.
   cur_sector++;
   for(; cur_sector<=DIRECT_LIMIT; cur_sector++)
@@ -141,7 +132,7 @@ bool inode_expand(struct inode *ind, off_t length)
         return true;
       }
   }
-  // printf("Allocating double indirectly.\n");
+
   // Doubly indirect allocation.
   if(cur_sector == DIRECT_LIMIT + 1)
     free_map_allocate(1, &ind->data.ptr[DIRECT_LIMIT]);
@@ -185,12 +176,14 @@ void inode_free(struct inode *ind)
 {
   int cur_sector = bytes_to_sectors(ind->data.length);
   int i;
+
   // Free direct data.
   for(i=1; i<=DIRECT_LIMIT; i++)
   {
     free_map_release(ind->data.ptr[i - 1], 1);
     if(i == cur_sector) return;
   }
+
   // Free doubly indirect data.
   struct indirect_sector doubly_indirect, cur_indirect;
   block_read(fs_device, ind->data.ptr[DIRECT_LIMIT], &doubly_indirect);
@@ -233,12 +226,14 @@ inode_init (void)
    Returns true if successful.
    Returns false if memory or disk allocation fails. */
 bool
-inode_create (block_sector_t sector, off_t length)
+inode_create (block_sector_t sector, off_t length, bool is_dir)
 {
   ASSERT (length >= 0);
   struct inode *tmp = malloc(sizeof(struct inode));
   tmp->sector = sector;
   tmp->data.length = 0;
+  tmp->data.is_dir = is_dir;
+  tmp->data.parent = ROOT_DIR_SECTOR;
   if(!inode_expand(tmp, length))
   {
     free(tmp);
@@ -280,7 +275,6 @@ inode_open (block_sector_t sector)
   inode->open_cnt = 1;
   inode->deny_write_cnt = 0;
   inode->removed = false;
-  lock_init(&inode->inode_lock);
   block_read (fs_device, inode->sector, &inode->data);
   return inode;
 }
@@ -457,4 +451,14 @@ off_t
 inode_length (const struct inode *inode)
 {
   return inode->data.length;
+}
+
+bool inode_isdir(const struct inode *inode)
+{
+  return inode->data.is_dir;
+}
+
+int inode_get_parent(const struct inode *inode)
+{
+  return inode->data.parent;
 }

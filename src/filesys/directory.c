@@ -26,7 +26,7 @@ struct dir_entry
 bool
 dir_create (block_sector_t sector, size_t entry_cnt)
 {
-  return inode_create (sector, entry_cnt * sizeof (struct dir_entry));
+  return inode_create (sector, entry_cnt * sizeof (struct dir_entry), true);
 }
 
 /* Opens and returns the directory for the given INODE, of which
@@ -62,6 +62,7 @@ dir_open_root (void)
 struct dir *
 dir_reopen (struct dir *dir) 
 {
+  if(dir == NULL) return NULL;
   return dir_open (inode_reopen (dir->inode));
 }
 
@@ -156,6 +157,10 @@ dir_add (struct dir *dir, const char *name, block_sector_t inode_sector)
   if (lookup (dir, name, NULL, NULL))
     goto done;
 
+  struct inode *child = inode_open(inode_sector);
+  if(!child) goto done;
+  child->data.parent = dir->inode->sector;
+
   /* Set OFS to offset of free slot.
      If there are no free slots, then it will be set to the
      current end-of-file.
@@ -233,4 +238,24 @@ dir_readdir (struct dir *dir, char name[NAME_MAX + 1])
         } 
     }
   return false;
+}
+
+/* Go up one directory in directory tree. */
+struct dir *dir_go_up(struct dir *dir)
+{
+  struct inode *ind = dir_get_inode(dir);
+  if(!ind) return NULL;
+  block_sector_t parent_id = inode_get_parent(ind);
+  ind = inode_open(parent_id);
+  if(!ind) return NULL;
+  return dir_open(ind);
+}
+
+/* Go down one directory in directory tree. */
+struct dir *dir_go_down(struct dir *dir, const char *name)
+{
+  if(strcmp(name, ".") == 0) return dir;
+  struct inode *child;
+  if(!dir_lookup(dir, name, &child)) return NULL;
+  return dir_open(child);
 }

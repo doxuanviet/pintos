@@ -4,6 +4,8 @@
 #include "threads/thread.h"
 #include "threads/synch.h"
 #include "userprog/syscall.h"
+#include "filesys/directory.h"
+#include "filesys/file.h"
 
 struct child_process
 {
@@ -21,6 +23,7 @@ struct file_descriptor
 {
 	int fd;
 	struct file *file;
+	struct dir *dir;
 	struct list_elem elem;
 };
 
@@ -34,7 +37,7 @@ struct child_process *process_get_child(int child_tid);
 void process_remove_child(int child_tid);
 void process_remove_child();
 
-struct file_descriptor *process_add_fd(struct file *file);
+struct file_descriptor *process_add_fd(struct file *file, struct dir *dir);
 struct file_descriptor *process_get_fd(int fd);
 void process_remove_fd(int fd);
 void process_remove_fd_all();

@@ -4,6 +4,7 @@
 #include <debug.h>
 #include <list.h>
 #include <stdint.h>
+#include "filesys/directory.h"
 
 /* States in a thread's life cycle. */
 enum thread_status
@@ -106,6 +107,8 @@ struct thread
     // File pointer to open itself to deny write.
     struct file *self_file;
 #endif
+
+    struct dir *current_dir;
 
     /* Owned by thread.c. */
     unsigned magic;                     /* Detects stack overflow. */

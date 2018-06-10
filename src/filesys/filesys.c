@@ -40,23 +40,60 @@ filesys_done (void)
   free_map_close ();
   cache_flush_all();
 }
-
+
+/* Get the parent directory of this directory.
+   If it is root already, return root. */
+struct dir *get_parent_dir(const char *name, char **file_name)
+{
+  if(name == NULL) return NULL;
+  char *cur_name, full_name[strlen(name) + 1], *save_ptr;
+  memcpy(full_name, name, strlen(name) + 1);
+
+  struct dir *cur_dir = NULL;
+
+  if(full_num[0] == '/' || thread_current()->current_dir == NULL)
+    cur_dir = dir_open_root();
+  else cur_dir = dir_reopen(thread_current()->current_dir);
+
+  cur_name = strtok_r(full_name, "/", &save_ptr);
+  while(cur_name != NULL)
+  {
+    *file_name = strtok_r(NULL, "/", &save_ptr);
+    if(*file_name == NULL)
+    {
+      *file_name = malloc(strlen(cur_name) + 1);
+      memcpy(*file_name, cur_name, strlen(cur_name) + 1);
+      return cur_dir;
+    }
+
+    if(strcmp(cur_name, "..") == 0) cur_dir = dir_go_up(cur_dir);
+    else cur_dir = dir_go_down(cur_dir, cur_name);
+    if(cur_dir == NULL) return NULL;
+
+    cur_name = *file_name;
+  }
+  return cur_dir;
+}
+
 /* Creates a file named NAME with the given INITIAL_SIZE.
    Returns true if successful, false otherwise.
    Fails if a file named NAME already exists,
    or if internal memory allocation fails. */
 bool
-filesys_create (const char *name, off_t initial_size) 
+filesys_create (const char *name, off_t initial_size, bool is_dir) 
 {
   block_sector_t inode_sector = 0;
-  struct dir *dir = dir_open_root ();
-  bool success = (dir != NULL
+  char *file_name = NULL;
+  struct dir *dir = get_parent_dir(name, &file_name);
+  bool success = (dir != NULL && file_name != NULL
+                  && strcmp(file_name, ".") && strcmp(file_name, "..")
                   && free_map_allocate (1, &inode_sector)
-                  && inode_create (inode_sector, initial_size)
-                  && dir_add (dir, name, inode_sector));
+                  && inode_create (inode_sector, initial_size, is_dir)
+                  && dir_add (dir, file_name, inode_sector));
   if (!success && inode_sector != 0) 
     free_map_release (inode_sector, 1);
   dir_close (dir);
+  free(file_name);
 
   return success;
 }
@@ -69,14 +106,25 @@ filesys_create (const char *name, off_t initial_size)
 struct file *
 filesys_open (const char *name)
 {
-  struct dir *dir = dir_open_root ();
-  struct inode *inode = NULL;
+  char *file_name;
+  struct dir *dir = get_parent_dir(name, &file_name);
+  if(dir == NULL) return NULL;
 
-  if (dir != NULL)
-    dir_lookup (dir, name, &inode);
+  if(strcmp(file_name, "..") == 0)
+  {
+    dir = dir_go_up(dir);
+    free(file_name);
+    return dir;
+  }
+
+  if(strcmp(file_name, ".") == 0) return dir;
+
+  struct inode *ind = NULL;
+  dir_lookup (dir, file_name, &ind);
   dir_close (dir);
-
-  return file_open (inode);
+  free(file_name);
+  
+  return file_open (ind);
 }
 
 /* Deletes the file named NAME.
@@ -86,9 +134,13 @@ filesys_open (const char *name)
 bool
 filesys_remove (const char *name) 
 {
-  struct dir *dir = dir_open_root ();
+  char *file_name;
+  struct dir *dir = get_parent_dir(name, &file_name);
+  if(dir == NULL) return false;
+
   bool success = dir != NULL && dir_remove (dir, name);
-  dir_close (dir); 
+  dir_close (dir);
+  free(file_name);
 
   return success;
 }

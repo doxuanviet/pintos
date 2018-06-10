@@ -205,6 +205,7 @@ thread_create (const char *name, int priority,
   sf->ebp = 0;
 
   t->parent = thread_current();
+  t->current_dir = dir_reopen(t->parent->current_dir);
   t->child = process_add_child(t->tid);
 
   intr_set_level (old_level);
@@ -478,6 +479,7 @@ init_thread (struct thread *t, const char *name, int priority)
   t->self_file = NULL;
   // fd_id 0 and 1 is reserved for stdin and stdout.
   t->fd_id = 2;
+  t->current_dir = NULL;
   list_init(&t->child_list);
   list_init(&t->file_list);
 }
