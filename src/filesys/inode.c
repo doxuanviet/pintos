@@ -252,6 +252,7 @@ inode_create (block_sector_t sector, off_t length, bool is_dir)
 struct inode *
 inode_open (block_sector_t sector)
 {
+  if(sector == 252) printf("Open 252\n");
   struct list_elem *e;
   struct inode *inode;
 
@@ -307,7 +308,7 @@ inode_close (struct inode *inode)
   /* Ignore null pointer. */
   if (inode == NULL)
     return;
-
+  if(inode->sector == 252) printf("Close 252\n");
   /* Release resources if this was the last opener. */
   if (--inode->open_cnt == 0)
     {

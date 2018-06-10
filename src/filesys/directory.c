@@ -227,7 +227,7 @@ dir_remove (struct dir *dir, const char *name)
 
   if(inode_isdir(inode) && inode_get_open_cnt(inode) > 1)
   {
-    if(inode_get_open_cnt(inode) > 1) printf("Checkpoint 1\n");
+    printf("Checkpoint 1\n");
     goto done;
   }
 
