@@ -119,7 +119,6 @@ process_wait (tid_t child_tid)
 void
 process_exit (void)
 {
-  printf("Start process_exit\n");
   struct thread *cur = thread_current ();
   file_close(cur->self_file);
   process_remove_child_all();
@@ -143,7 +142,6 @@ process_exit (void)
       pagedir_destroy (pd);
     }
   sema_up(&cur->child->exit_sema);
-  printf("Done process_exit\n");
 }
 
 /* Sets up the CPU for running user code in the current
