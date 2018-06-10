@@ -72,9 +72,9 @@ dir_reopen (struct dir *dir)
 void
 dir_close (struct dir *dir) 
 {
-  printf("Dir closing %d\n",inode_get_inumber(dir->inode));
   if (dir != NULL)
     {
+      printf("Dir closing %d\n",inode_get_inumber(dir->inode));
       inode_close (dir->inode);
       free (dir);
     }
