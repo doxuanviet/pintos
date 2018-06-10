@@ -38,7 +38,7 @@ dir_open (struct inode *inode)
   struct dir *dir = calloc (1, sizeof *dir);
   if (inode != NULL && dir != NULL)
     {
-      printf("Dir opening %d\n",inode_get_inumber(dir->inode));
+      // printf("Dir opening %d\n",inode_get_inumber(dir->inode));
       dir->inode = inode;
       dir->pos = 0;
       return dir;
@@ -74,8 +74,8 @@ dir_close (struct dir *dir)
 {
   if (dir != NULL)
     {
-      if(dir->inode != NULL)
-        printf("Dir closing %d\n",inode_get_inumber(dir->inode));
+      // if(dir->inode != NULL)
+      //   printf("Dir closing %d\n",inode_get_inumber(dir->inode));
       inode_close (dir->inode);
       free (dir);
     }
