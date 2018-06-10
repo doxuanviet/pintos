@@ -70,6 +70,7 @@ dir_reopen (struct dir *dir)
 void
 dir_close (struct dir *dir) 
 {
+  printf("Start dir_close\n");
   printf("Start dir_close %d\n", inode_get_inumber(dir->inode));
   if (dir != NULL)
     {
