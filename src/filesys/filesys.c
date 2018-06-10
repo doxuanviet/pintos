@@ -107,9 +107,14 @@ filesys_create (const char *name, off_t initial_size, bool is_dir)
 struct file *
 filesys_open (const char *name)
 {
-  char *file_name;
+  char *file_name = NULL;
   struct dir *dir = get_parent_dir(name, &file_name);
   if(dir == NULL) return NULL;
+  if(file_name == NULL)
+  {
+    dir_close(dir);
+    return NULL;
+  }
 
   if(strcmp(file_name, "..") == 0)
   {
