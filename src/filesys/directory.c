@@ -219,6 +219,7 @@ dir_remove (struct dir *dir, const char *name)
 
   /* Open inode. */
   inode = inode_open (e.inode_sector);
+  printf("Open inode %d\n",inode_get_inumber(inode));
   if (inode == NULL)
     goto done;
 
@@ -242,6 +243,7 @@ dir_remove (struct dir *dir, const char *name)
   success = true;
 
  done:
+  printf("Close inode %d\n",inode_get_inumber(inode));
   inode_close (inode);
   printf("Done removing\n");
   return success;
