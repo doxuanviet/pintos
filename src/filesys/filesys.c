@@ -151,7 +151,7 @@ filesys_remove (const char *name)
   struct dir *dir = get_parent_dir(name, &file_name);
   if(dir == NULL) return false;
 
-  bool success = dir != NULL && dir_remove (dir, name);
+  bool success = dir != NULL && dir_remove (dir, file_name);
   dir_close (dir);
   free(file_name);
 
