@@ -223,21 +223,36 @@ dir_remove (struct dir *dir, const char *name)
   /* Open inode. */
   struct inode *inode = inode_open (e.inode_sector);
   if (inode == NULL)
+  {
+    printf("Checkpoint 1\n");
     goto done;
+  }
 
   if(inode_get_inumber(inode) == ROOT_DIR_SECTOR)
+  {
+    printf("Checkpoint 2\n");
     goto done;
+  }
 
   if(inode_isdir(inode) && inode_get_open_cnt(inode) > 1)
+  {
+    printf("Checkpoint 3\n");
     goto done;
+  }
 
   if(inode_isdir(inode) && !dir_is_empty(inode))
+  {
+    printf("Checkpoint 4\n");
     goto done;
+  }
 
   /* Erase directory entry. */
   e.in_use = false;
   if (inode_write_at (dir->inode, &e, sizeof e, ofs) != sizeof e) 
+  {
+    printf("Checkpoint 5\n");
     goto done;
+  }
 
   /* Remove inode. */
   printf("Remove child %s from %d\n",name, (inode_get_inumber(dir_get_inode(dir))));
