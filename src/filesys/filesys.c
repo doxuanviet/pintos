@@ -112,6 +112,8 @@ filesys_open (const char *name)
   if(dir == NULL) return NULL;
   if(file_name == NULL)
   {
+    if((inode_get_inumber(dir_get_inode(dir))) == 1)
+      return dir;
     dir_close(dir);
     return NULL;
   }
