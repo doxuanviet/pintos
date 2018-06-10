@@ -215,6 +215,7 @@ dir_remove (struct dir *dir, const char *name)
   ASSERT (dir != NULL);
   ASSERT (name != NULL);
 
+  printf("Try to remove child %s from %d\n",name, (inode_get_inumber(dir_get_inode(dir))));
   /* Find directory entry. */
   if (!lookup (dir, name, &e, &ofs))
     goto done;
