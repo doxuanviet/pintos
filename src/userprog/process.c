@@ -653,6 +653,7 @@ void process_remove_fd(int fd)
 
 void process_remove_fd_all()
 {
+  printf("Start checkpoint 1\n");
   struct list_elem *e;
   struct thread *cur = thread_current();
   for(e=list_begin(&cur->file_list); e!=list_end(&cur->file_list);)
@@ -665,4 +666,5 @@ void process_remove_fd_all()
     lock_release(&filesys_lock);
     free(file_desc);
   }
+  printf("End checkpoint 1\n");
 }
