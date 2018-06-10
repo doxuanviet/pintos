@@ -287,5 +287,6 @@ struct dir *dir_go_down(struct dir *dir, const char *name)
   if(strcmp(name, ".") == 0) return dir;
   struct inode *child;
   if(!dir_lookup(dir, name, &child)) return NULL;
+  dir_close(dir);
   return dir_open(child);
 }
