@@ -205,7 +205,6 @@ bool
 dir_remove (struct dir *dir, const char *name) 
 {
   struct dir_entry e;
-  struct inode *inode = NULL;
   bool success = false;
   off_t ofs;
 
@@ -218,7 +217,7 @@ dir_remove (struct dir *dir, const char *name)
     goto done;
 
   /* Open inode. */
-  inode = inode_open (e.inode_sector);
+  struct inode *inode = inode_open (e.inode_sector);
   printf("Open inode %d\n",inode_get_inumber(inode));
   if (inode == NULL)
     goto done;
