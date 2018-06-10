@@ -8,6 +8,7 @@
 #include "process.h"
 #include "filesys/file.h"
 #include "filesys/inode.h"
+#include "filesys/filesys.h"
 
 static void syscall_handler (struct intr_frame *);
 
