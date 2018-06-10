@@ -249,11 +249,9 @@ int open (const char * file )
   }
   if(inode_isdir(file_get_inode(f)))
   {
-    printf("%s is a dir.\n", file);
     dir = f;
     f = NULL;
   }
-  else printf("%s is a file.\n", file);
   struct file_descriptor *file_desc = process_add_fd(f, dir);
   lock_release(&filesys_lock);
   return file_desc->fd;
