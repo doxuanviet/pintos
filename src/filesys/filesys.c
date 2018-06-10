@@ -107,13 +107,14 @@ filesys_create (const char *name, off_t initial_size, bool is_dir)
 struct file *
 filesys_open (const char *name)
 {
+  if(strlen(name) == 0) return NULL;
   char *file_name = NULL;
   struct dir *dir = get_parent_dir(name, &file_name);
   if(dir == NULL) return NULL;
   if(file_name == NULL)
   {
     printf("Yes, here\n");
-    if((inode_get_inumber(dir_get_inode(dir))) == 1)
+    if((inode_get_inumber(dir_get_inode(dir))) == ROOT_DIR_SECTOR)
       return dir;
     dir_close(dir);
     return NULL;
