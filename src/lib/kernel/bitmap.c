@@ -284,7 +284,7 @@ bitmap_none (const struct bitmap *b, size_t start, size_t cnt)
 bool
 bitmap_all (const struct bitmap *b, size_t start, size_t cnt) 
 {
-  if(!bitmap_contains (b, start, cnt, false)) printf("error at %d %d\n",start, cnt);
+  if(bitmap_contains (b, start, cnt, false)) printf("error at %d %d\n",start, cnt);
   return !bitmap_contains (b, start, cnt, false);
 }
 
