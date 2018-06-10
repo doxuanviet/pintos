@@ -16,4 +16,4 @@ pintos -v -k -T 60  --qemu --disk=tmp.dsk -g fs.tar -a tests/filesys/extended/sy
 
 rm -f tmp.dsk
 git pull && make && pintos-mkdisk tmp.dsk --filesys-size=2 && \
-pintos -v -k -T 60 --qemu  --disk=tmp.dsk -p build/tests/filesys/extended/dir-rm-root -a dir-rm-root -p build/tests/filesys/extended/tar -a tar -- -q  -f run dir-rm-root
+pintos -v -k -T 60 --qemu  --disk=tmp.dsk -p build/tests/filesys/extended/dir-rm-tree -a dir-rm-tree -p build/tests/filesys/extended/tar -a tar -- -q  -f run dir-rm-tree
