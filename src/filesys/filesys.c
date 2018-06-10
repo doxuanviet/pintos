@@ -7,6 +7,7 @@
 #include "filesys/inode.h"
 #include "filesys/directory.h"
 #include "filesys/cache.h"
+#include "threads/thread.h"
 
 /* Partition that contains the file system. */
 struct block *fs_device;
@@ -51,7 +52,7 @@ struct dir *get_parent_dir(const char *name, char **file_name)
 
   struct dir *cur_dir = NULL;
 
-  if(full_num[0] == '/' || thread_current()->current_dir == NULL)
+  if(full_name[0] == '/' || thread_current()->current_dir == NULL)
     cur_dir = dir_open_root();
   else cur_dir = dir_reopen(thread_current()->current_dir);
 
@@ -123,7 +124,7 @@ filesys_open (const char *name)
   dir_lookup (dir, file_name, &ind);
   dir_close (dir);
   free(file_name);
-  
+
   return file_open (ind);
 }
 
