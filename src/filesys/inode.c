@@ -467,3 +467,8 @@ void inode_set_parent(struct inode *inode, block_sector_t parent)
 {
   inode->data.parent = parent;
 }
+
+int inode_get_open_cnt(const struct inode *inode)
+{
+  return inode->open_cnt;
+}
