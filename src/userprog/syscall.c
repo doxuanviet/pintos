@@ -201,6 +201,7 @@ void exit(int status)
   child->exit_retval = status;
   child->exit_status = 1;
   thread_exit();
+  printf("Done exitting\n");
 }
 int exec(const char *cmd_line)
 {
