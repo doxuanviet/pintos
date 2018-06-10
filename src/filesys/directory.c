@@ -146,6 +146,7 @@ dir_lookup (const struct dir *dir, const char *name,
 bool
 dir_add (struct dir *dir, const char *name, block_sector_t inode_sector)
 {
+  printf("wrap around\n");
   struct dir_entry e;
   off_t ofs;
   bool success = false;
@@ -186,6 +187,7 @@ dir_add (struct dir *dir, const char *name, block_sector_t inode_sector)
   success = inode_write_at (dir->inode, &e, sizeof e, ofs) == sizeof e;
 
  done:
+  printf("Close wrap\n");
   return success;
 }
 
