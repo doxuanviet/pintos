@@ -365,6 +365,6 @@ int inumber(int fd)
 {
   struct file_descriptor *file_desc = process_get_fd(fd);
   if(!file_desc) return -1;
-  if(file_desc->file) return file_desc->file->inode->sector;
+  if(file_desc->file) return inode_get_inumber(file_get_inode(file_desc->dir));
   return inode_get_inumber(dir_get_inode(file_desc->dir));
 }
