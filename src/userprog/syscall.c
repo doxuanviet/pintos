@@ -363,6 +363,7 @@ bool chdir(const char *dir)
     printf("END CHDIR 4\n");
     return false;
   }
+  if(thread_current()->current_dir == NULL) printf("WHAT???\n");
   dir_close(thread_current()->current_dir);
   thread_current()->current_dir = new_dir;
   printf("END CHDIR 5 \n");
