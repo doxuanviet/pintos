@@ -170,7 +170,7 @@ static bool
 archive_directory (char file_name[], size_t file_name_size, int file_fd,
                    int archive_fd, bool *write_error)
 {
-  printf("Reach here with %s %d %d %d\n",file_name, file_name_size, file_fd, archie_fd);
+  printf("Reach here with %s %d %d %d\n",file_name, file_name_size, file_fd, archive_fd);
   size_t dir_len;
   bool success = true;
 
