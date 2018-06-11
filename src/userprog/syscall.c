@@ -329,21 +329,26 @@ void close (int fd )
 
 bool chdir(const char *dir)
 {
+  print("CHDIR\n");
   char *file_name = NULL;
   struct dir *new_dir = get_parent_dir(dir, &file_name);
   if(new_dir == NULL)
   {
     free(file_name);
+    print("END CHDIR 1\n");
     return false;
   }
   if(file_name == NULL)
   {
     if((inode_get_inumber(dir_get_inode(new_dir))) == ROOT_DIR_SECTOR)
     {
+      dir_close(thread_current()->current_dir);
       thread_current()->current_dir = new_dir;
+      print("END CHDIR 2\n");
       return true;
     }
     dir_close(new_dir);
+    print("END CHDIR 3\n");
     return false;
   }
 
@@ -356,6 +361,7 @@ bool chdir(const char *dir)
   if(new_dir == NULL) return false;
   dir_close(thread_current()->current_dir);
   thread_current()->current_dir = new_dir;
+  print("END CHDIR 4\n");
   return true;
 }
 
