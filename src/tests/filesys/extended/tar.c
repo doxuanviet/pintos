@@ -99,6 +99,7 @@ static bool
 archive_file (char file_name[], size_t file_name_size,
               int archive_fd, bool *write_error) 
 {
+  printf("Not even here??\n");
   int file_fd = open (file_name);
   if (file_fd >= 0) 
     {
