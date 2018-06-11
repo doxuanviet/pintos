@@ -121,7 +121,7 @@ archive_file (char file_name[], size_t file_name_size,
           /* Nothing to do: don't try to archive the archive file. */
           success = true;
         }
-  
+      printf("Ah hah ah hah\n");
       close (file_fd);
       printf("Here??\n");
       return success;
