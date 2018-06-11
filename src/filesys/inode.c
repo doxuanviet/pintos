@@ -384,13 +384,13 @@ off_t
 inode_write_at (struct inode *inode, const void *buffer_, off_t size,
                 off_t offset) 
 {
-  printf("Start inode_write\n");
+  // printf("Start inode_write\n");
   const uint8_t *buffer = buffer_;
   off_t bytes_written = 0;
 
   if (inode->deny_write_cnt)
   {
-    printf("End inode_write 1\n");
+    // printf("End inode_write 1\n");
     return 0;
   }
 
@@ -399,7 +399,7 @@ inode_write_at (struct inode *inode, const void *buffer_, off_t size,
 
   while (size > 0) 
     {
-      printf("Die in here!\n");
+      // printf("Die in here!\n");
       /* Sector to write, starting byte offset within sector. */
       block_sector_t sector_idx = byte_to_sector (inode, offset);
       int sector_ofs = offset % BLOCK_SECTOR_SIZE;
@@ -426,7 +426,7 @@ inode_write_at (struct inode *inode, const void *buffer_, off_t size,
       bytes_written += chunk_size;
     }
 
-  printf("End inode_write 2\n");
+  // printf("End inode_write 2\n");
   return bytes_written;
 }
 
