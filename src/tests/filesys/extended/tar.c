@@ -66,7 +66,7 @@ make_tar_archive (const char *archive_name, char *files[], size_t file_cnt)
       printf ("%s: open failed\n", archive_name);
       return false;
     }
-
+  printf("reach chkpt 1\n");
   for (i = 0; i < file_cnt; i++) 
     {
       char file_name[128];
@@ -90,6 +90,7 @@ make_tar_archive (const char *archive_name, char *files[], size_t file_cnt)
 
   close (archive_fd);
 
+  printf("reach chkpt 2\n");
   return success;
 }
 
