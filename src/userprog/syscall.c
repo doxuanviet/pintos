@@ -166,6 +166,7 @@ syscall_handler (struct intr_frame *f)
     get_args(esp, args, 1);
     check_valid_str(args[0]);
     f->eax = mkdir(args[0]);
+  }
   else if(call_num == SYS_READDIR)
   {
     get_args(esp, args, 2);
