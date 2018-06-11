@@ -105,7 +105,10 @@ archive_file (char file_name[], size_t file_name_size,
   if (file_fd >= 0) 
     {
       bool success;
-
+      int a = inumber(file_fd);
+      printf("INUMBER %d\n", a);
+      int b = inumber(archive_fd);
+      printf("INUMBER %d\n", b);
       if (inumber (file_fd) != inumber (archive_fd)) 
         {
           printf("Reach here!\n");
