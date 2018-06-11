@@ -80,7 +80,8 @@ make_tar_archive (const char *archive_name, char *files[], size_t file_cnt)
       }
         
     }
-
+    
+  printf("reach chkpt 2\n");
   if (!do_write (archive_fd, zeros, 512, &write_error)
       || !do_write (archive_fd, zeros, 512, &write_error))
   {
@@ -90,7 +91,6 @@ make_tar_archive (const char *archive_name, char *files[], size_t file_cnt)
 
   close (archive_fd);
 
-  printf("reach chkpt 2\n");
   return success;
 }
 
