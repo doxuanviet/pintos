@@ -106,6 +106,7 @@ archive_file (char file_name[], size_t file_name_size,
 
       if (inumber (file_fd) != inumber (archive_fd)) 
         {
+          printf("Reach here!\n");
           if (!isdir (file_fd))
             success = archive_ordinary_file (file_name, file_fd,
                                              archive_fd, write_error);
