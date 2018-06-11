@@ -101,6 +101,7 @@ archive_file (char file_name[], size_t file_name_size,
 {
   printf("Not even here??\n");
   int file_fd = open (file_name);
+  printf("Ah hah\n");
   if (file_fd >= 0) 
     {
       bool success;
