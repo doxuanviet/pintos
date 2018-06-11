@@ -292,6 +292,7 @@ struct dir *dir_go_up(struct dir *dir)
   block_sector_t parent_id = inode_get_parent(ind);
   ind = inode_open(parent_id);
   if(!ind) return NULL;
+  dir_close(dir);
   return dir_open(ind);
 }
 
