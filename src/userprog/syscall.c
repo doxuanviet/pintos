@@ -225,6 +225,7 @@ int wait (int pid)
 }
 bool create (const char * file , unsigned initial_size )
 {
+  printf("CREATE FILE\n");
   lock_acquire(&filesys_lock);
   bool res = filesys_create(file, initial_size, false);
   lock_release(&filesys_lock);
@@ -239,6 +240,7 @@ bool remove (const char * file )
 }
 int open (const char * file )
 {
+  printf("OPEN\n");
   lock_acquire(&filesys_lock);
   struct file *f = filesys_open(file);
   struct dir *dir = NULL;
@@ -356,6 +358,7 @@ bool chdir(const char *dir)
 
 bool mkdir(const char *dir)
 {
+  printf("MKDIR\n");
   return filesys_create(dir, 0, true);
 }
 
