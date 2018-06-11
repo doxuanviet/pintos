@@ -123,7 +123,7 @@ bool inode_expand(struct inode *ind, off_t length)
   cur_sector++;
   for(; cur_sector<=DIRECT_LIMIT; cur_sector++)
   {
-    if(!free_map_allocate(1, &ind->data.ptr[cur_sector - 1])) printf("Free map alloc failed.\n");
+    free_map_allocate(1, &ind->data.ptr[cur_sector - 1]);
     block_write(fs_device, ind->data.ptr[cur_sector - 1], zeroes);
     if(cur_sector == target_sector)
       {
@@ -135,7 +135,7 @@ bool inode_expand(struct inode *ind, off_t length)
 
   // Doubly indirect allocation.
   if(cur_sector == DIRECT_LIMIT + 1)
-    if(!free_map_allocate(1, &ind->data.ptr[DIRECT_LIMIT])) printf("Free map alloc failed.\n");
+    free_map_allocate(1, &ind->data.ptr[DIRECT_LIMIT]);
 
   struct indirect_sector doubly_indirect, cur_indirect;
 
@@ -146,7 +146,7 @@ bool inode_expand(struct inode *ind, off_t length)
     int data_id = (cur_sector - DIRECT_LIMIT - 1)/128;
     int indirect_id = (cur_sector - DIRECT_LIMIT - 1)%128;
     if(indirect_id == 0)
-      if(!free_map_allocate(fs_device, &doubly_indirect.ptr[data_id])) printf("Free map alloc failed.\n");
+      free_map_allocate(fs_device, &doubly_indirect.ptr[data_id]);
     if(old_data_id != data_id)
     {
       if(old_data_id != -1)
@@ -155,7 +155,7 @@ bool inode_expand(struct inode *ind, off_t length)
       block_read(fs_device, doubly_indirect.ptr[data_id], &cur_indirect);
     }
 
-    if(!free_map_allocate(1, &cur_indirect.ptr[indirect_id])) printf("Free map alloc failed.\n");
+    free_map_allocate(1, &cur_indirect.ptr[indirect_id]);
     block_write(fs_device, cur_indirect.ptr[indirect_id], zeroes);
     old_data_id = data_id;
     if(cur_sector == target_sector)
@@ -384,22 +384,17 @@ off_t
 inode_write_at (struct inode *inode, const void *buffer_, off_t size,
                 off_t offset) 
 {
-  // printf("Start inode_write\n");
   const uint8_t *buffer = buffer_;
   off_t bytes_written = 0;
 
   if (inode->deny_write_cnt)
-  {
-    // printf("End inode_write 1\n");
     return 0;
-  }
 
   if(offset + size > inode->data.length)
     ASSERT(inode_expand(inode, offset + size));
 
   while (size > 0) 
     {
-      // printf("Die in here!\n");
       /* Sector to write, starting byte offset within sector. */
       block_sector_t sector_idx = byte_to_sector (inode, offset);
       int sector_ofs = offset % BLOCK_SECTOR_SIZE;
@@ -426,7 +421,6 @@ inode_write_at (struct inode *inode, const void *buffer_, off_t size,
       bytes_written += chunk_size;
     }
 
-  // printf("End inode_write 2\n");
   return bytes_written;
 }
 

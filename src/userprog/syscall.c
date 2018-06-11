@@ -91,131 +91,96 @@ syscall_handler (struct intr_frame *f)
   }
   else if(call_num == SYS_EXIT)
   {
-    // printf("Start SYS_EXIT\n");
     get_args(esp, args, 1);
     exit(args[0]);
-    // printf("End SYS_EXIT\n");
   }
   else if(call_num == SYS_EXEC)
   {
-    // printf("Start SYS_EXEC\n");
     get_args(esp, args, 1);
     check_valid_str(args[0]);
     f->eax = exec(args[0]);
-    // printf("End SYS_EXEC\n");
   }
   else if(call_num == SYS_WAIT)
   {
-    // printf("Start SYS_WAIT\n");
     get_args(esp, args, 1);
     f->eax = wait(args[0]);
-    // printf("End SYS_WAIT\n");
   }
   else if(call_num == SYS_CREATE)
   {
-    // printf("Start SYS_CREATE\n");
     get_args(esp, args, 2);
     check_valid_str(args[0]);
     f->eax = create(args[0], args[1]);
-    // printf("End SYS_CREATE\n");
   }
   else if(call_num == SYS_REMOVE)
   {
-    // printf("Start SYS_REMOVE\n");
     get_args(esp, args, 1);
     check_valid_str(args[0]);
     f->eax = remove(args[0]);
-    // printf("End SYS_REMOVE\n");
   }
   else if(call_num == SYS_OPEN)
   {
-    // printf("Start SYS_OPEN\n");
     get_args(esp, args, 1);
     check_valid_str(args[0]);
     f->eax = open(args[0]);
-    // printf("End SYS_OPEN\n");
   }
   else if(call_num == SYS_FILESIZE)
   {
-    // printf("Start SYS_FILESIZE\n");
     get_args(esp, args, 1);
     f->eax = filesize(args[0]);
-    // printf("End SYS_FILESIZE\n");
   }
   else if(call_num == SYS_READ)
   {
-    // printf("Start SYS_READ\n");
     get_args(esp, args, 3);
     check_valid_buffer(args[1], args[2]);
     f->eax = read(args[0], args[1], args[2]);
-    // printf("End SYS_READ\n");
   }
   else if(call_num == SYS_WRITE)
   {
-    // printf("Start SYS_WRITE\n");
     get_args(esp, args, 3);
     check_valid_buffer(args[1], args[2]);
     f->eax = write(args[0], args[1], args[2]);
-    // printf("End SYS_WRITE\n");
   }
   else if(call_num == SYS_SEEK)
   {
-    // printf("Start SYS_SEEK\n");
     get_args(esp, args, 2);
     seek(args[0], args[1]);
-    // printf("End SYS_SEEK\n");
   }
   else if(call_num == SYS_TELL)
   {
-    // printf("Start SYS_TELL\n");
     get_args(esp, args, 1);
     f->eax = tell(args[0]);
-    // printf("End SYS_TELL\n");
   }
   else if(call_num == SYS_CLOSE)
   {
-    // printf("Start SYS_CLOSE\n");
     get_args(esp, args, 1);
     close(args[0]);
-    // printf("End SYS_CLOSE\n");
   }
   else if(call_num == SYS_CHDIR)
   {
-    // printf("Start SYS_CHDIR\n");
     get_args(esp, args, 1);
     check_valid_str(args[0]);
     f->eax = chdir(args[0]);
-    // printf("End SYS_CHDIR\n");
   }
   else if(call_num == SYS_MKDIR)
   {
-    // printf("Start SYS_MKDIR\n");
     get_args(esp, args, 1);
     check_valid_str(args[0]);
     f->eax = mkdir(args[0]);
-    // printf("End SYS_MKDIR\n");
-  }
   else if(call_num == SYS_READDIR)
   {
-    // printf("Start readdir\n");
     get_args(esp, args, 2);
     check_valid_str(args[1]);
     f->eax = readdir(args[0], args[1]);
-    // printf("End readdir\n");
   }
   else if(call_num == SYS_ISDIR)
   {
-    // printf("Start isdir\n");
     get_args(esp, args, 1);
     f->eax = isdir(args[0]);
-    // printf("End isdir\n");
   }
   else if(call_num == SYS_INUMBER)
   {
-    // printf("Start inumber\n");
     get_args(esp, args, 1);
     f->eax = inumber(args[0]);
-    // printf("End inumber\n");
   }
   else
   {
