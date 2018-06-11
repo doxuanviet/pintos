@@ -365,7 +365,7 @@ bool chdir(const char *dir)
   }
   dir_close(thread_current()->current_dir);
   thread_current()->current_dir = new_dir;
-  printf("END CHDIR 5\n");
+  printf("END CHDIR 5 \n");
   return true;
 }
 
