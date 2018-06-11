@@ -360,7 +360,7 @@ bool chdir(const char *dir)
 
   if(new_dir == NULL)
   {
-    print("END CHDIR 4\n");
+    printf("END CHDIR 4\n");
     return false;
   }
   dir_close(thread_current()->current_dir);
