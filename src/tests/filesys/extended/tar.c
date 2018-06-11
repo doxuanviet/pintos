@@ -105,6 +105,7 @@ archive_file (char file_name[], size_t file_name_size,
   if (file_fd >= 0) 
     {
       bool success;
+      printf("FD: %d %d\n", file_fd, archive_fd);
       int a = inumber(file_fd);
       printf("INUMBER %d\n", a);
       int b = inumber(archive_fd);
