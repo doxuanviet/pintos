@@ -40,7 +40,6 @@ dir_open (struct inode *inode)
     {
       dir->inode = inode;
       dir->pos = 0;
-      // printf("Dir opening %d\n",inode_get_inumber(dir->inode));
       return dir;
     }
   else
@@ -74,8 +73,6 @@ dir_close (struct dir *dir)
 {
   if (dir != NULL)
     {
-      // if(dir->inode != NULL)
-        // printf("Dir closing %d\n",inode_get_inumber(dir->inode));
       inode_close (dir->inode);
       free (dir);
     }
@@ -166,7 +163,6 @@ dir_add (struct dir *dir, const char *name, block_sector_t inode_sector)
   struct inode *child = inode_open(inode_sector);
   if(!child) goto done;
   inode_set_parent(child, (inode_get_inumber(dir->inode)));
-  // printf("Add %d (name %s) to %d\n", inode_get_inumber(child), name, inode_get_inumber(dir->inode));
   inode_close(child);
 
   /* Set OFS to offset of free slot.
@@ -214,7 +210,6 @@ dir_remove (struct dir *dir, const char *name)
   ASSERT (dir != NULL);
   ASSERT (name != NULL);
 
-  // printf("Try to remove child %s from %d\n",name, (inode_get_inumber(dir_get_inode(dir))));
   /* Find directory entry. */
   if (!lookup (dir, name, &e, &ofs))
     goto done;
@@ -222,39 +217,23 @@ dir_remove (struct dir *dir, const char *name)
   /* Open inode. */
   struct inode *inode = inode_open (e.inode_sector);
   if (inode == NULL)
-  {
-    // printf("Checkpoint 1\n");
     goto done;
-  }
 
   if(inode_get_inumber(inode) == ROOT_DIR_SECTOR)
-  {
-    // printf("Checkpoint 2\n");
     goto done;
-  }
 
   if(inode_isdir(inode) && inode_get_open_cnt(inode) > 1)
-  {
-    // printf("Checkpoint 3: %d\n",inode_get_open_cnt(inode));
     goto done;
-  }
 
   if(inode_isdir(inode) && !dir_is_empty(inode))
-  {
-    // printf("Checkpoint 4\n");
     goto done;
-  }
 
   /* Erase directory entry. */
   e.in_use = false;
   if (inode_write_at (dir->inode, &e, sizeof e, ofs) != sizeof e) 
-  {
-    // printf("Checkpoint 5\n");
     goto done;
-  }
 
   /* Remove inode. */
-  // printf("Remove child %s from %d\n",name, (inode_get_inumber(dir_get_inode(dir))));
   inode_remove (inode);
   success = true;
 

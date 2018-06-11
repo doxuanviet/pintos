@@ -340,7 +340,6 @@ inode_remove (struct inode *inode)
 off_t
 inode_read_at (struct inode *inode, void *buffer_, off_t size, off_t offset) 
 {
-  // printf("NEW READ\n");
   uint8_t *buffer = buffer_;
   off_t bytes_read = 0;
 
@@ -373,7 +372,6 @@ inode_read_at (struct inode *inode, void *buffer_, off_t size, off_t offset)
       bytes_read += chunk_size;
     }
 
-  // printf("DONE READ\n");
   return bytes_read;
 }
 
@@ -386,7 +384,6 @@ off_t
 inode_write_at (struct inode *inode, const void *buffer_, off_t size,
                 off_t offset) 
 {
-  // printf("NEW WRITE\n");
   const uint8_t *buffer = buffer_;
   off_t bytes_written = 0;
 
@@ -424,7 +421,6 @@ inode_write_at (struct inode *inode, const void *buffer_, off_t size,
       bytes_written += chunk_size;
     }
 
-  // printf("END WRITE\n");
   return bytes_written;
 }
 

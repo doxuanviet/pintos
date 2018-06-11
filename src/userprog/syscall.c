@@ -225,11 +225,9 @@ int wait (int pid)
 }
 bool create (const char * file , unsigned initial_size )
 {
-  // printf("CREATE FILE\n");
   lock_acquire(&filesys_lock);
   bool res = filesys_create(file, initial_size, false);
   lock_release(&filesys_lock);
-  // printf("END CREATE FILE\n");
   return res;
 }
 bool remove (const char * file )
@@ -241,14 +239,12 @@ bool remove (const char * file )
 }
 int open (const char * file )
 {
-  // printf("OPEN\n");
   lock_acquire(&filesys_lock);
   struct file *f = filesys_open(file);
   struct dir *dir = NULL;
   if(f == NULL)
   {
     lock_release(&filesys_lock);
-    // printf("END OPEN 1\n");
     return -1;
   }
   if(inode_isdir(file_get_inode(f)))
@@ -258,7 +254,6 @@ int open (const char * file )
   }
   struct file_descriptor *file_desc = process_add_fd(f, dir);
   lock_release(&filesys_lock);
-  // printf("END OPEN 2\n");
   return file_desc->fd;
 }
 int filesize (int fd )
@@ -329,13 +324,11 @@ void close (int fd )
 
 bool chdir(const char *dir)
 {
-  // printf("CHDIR\n");
   char *file_name = NULL;
   struct dir *new_dir = get_parent_dir(dir, &file_name);
   if(new_dir == NULL)
   {
     free(file_name);
-    // printf("END CHDIR 1\n");
     return false;
   }
   if(file_name == NULL)
@@ -344,11 +337,9 @@ bool chdir(const char *dir)
     {
       dir_close(thread_current()->current_dir);
       thread_current()->current_dir = new_dir;
-      // printf("END CHDIR 2\n");
       return true;
     }
     dir_close(new_dir);
-    // printf("END CHDIR 3\n");
     return false;
   }
 
@@ -359,23 +350,15 @@ bool chdir(const char *dir)
   free(file_name);
 
   if(new_dir == NULL)
-  {
-    // printf("END CHDIR 4\n");
     return false;
-  }
-  // if(thread_current()->current_dir == NULL) printf("WHAT???\n");
   dir_close(thread_current()->current_dir);
   thread_current()->current_dir = new_dir;
-  // printf("END CHDIR 5 \n");
   return true;
 }
 
 bool mkdir(const char *dir)
 {
-  // printf("MKDIR\n");
-  bool res = filesys_create(dir, 0, true);
-  // printf("END MKDIR\n");
-  return res;
+  return filesys_create(dir, 0, true);
 }
 
 bool readdir(int fd, const char *name)
