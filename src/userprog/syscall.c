@@ -181,7 +181,9 @@ syscall_handler (struct intr_frame *f)
   else if(call_num == SYS_INUMBER)
   {
     get_args(esp, args, 1);
+    printf("Tada\n");
     f->eax = inumber(args[0]);
+    printf("Tadaa\n");
   }
   else
   {
