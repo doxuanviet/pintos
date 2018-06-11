@@ -48,6 +48,7 @@ static bool do_write (int fd, const char *buffer, int size, bool *write_error);
 static bool
 make_tar_archive (const char *archive_name, char *files[], size_t file_cnt) 
 {
+  printf("Tar-ing\n");
   static const char zeros[512];
   int archive_fd;
   bool success = true;
