@@ -48,7 +48,6 @@ static bool do_write (int fd, const char *buffer, int size, bool *write_error);
 static bool
 make_tar_archive (const char *archive_name, char *files[], size_t file_cnt) 
 {
-  printf("Tar-ing\n");
   static const char zeros[512];
   int archive_fd;
   bool success = true;
@@ -66,29 +65,20 @@ make_tar_archive (const char *archive_name, char *files[], size_t file_cnt)
       printf ("%s: open failed\n", archive_name);
       return false;
     }
-  printf("reach chkpt 1\n");
+
   for (i = 0; i < file_cnt; i++) 
     {
       char file_name[128];
       
       strlcpy (file_name, files[i], sizeof file_name);
-      printf("FILE: %s\n",file_name);
       if (!archive_file (file_name, sizeof file_name,
                          archive_fd, &write_error))
-      {
-        printf("ERROR at 1\n");
         success = false;
-      }
-        
     }
 
-  printf("reach chkpt 2\n");
   if (!do_write (archive_fd, zeros, 512, &write_error)
-      || !do_write (archive_fd, zeros, 512, &write_error))
-  {
-    printf("ERROR at 2\n");
+      || !do_write (archive_fd, zeros, 512, &write_error)) 
     success = false;
-  }
 
   close (archive_fd);
 
@@ -99,20 +89,13 @@ static bool
 archive_file (char file_name[], size_t file_name_size,
               int archive_fd, bool *write_error) 
 {
-  printf("Not even here??\n");
   int file_fd = open (file_name);
-  printf("Ah hah\n");
   if (file_fd >= 0) 
     {
       bool success;
-      printf("FD: %d %d\n", file_fd, archive_fd);
-      int a = inumber(file_fd);
-      printf("INUMBER %d\n", a);
-      int b = inumber(archive_fd);
-      printf("INUMBER %d\n", b);
+
       if (inumber (file_fd) != inumber (archive_fd)) 
         {
-          printf("Reach here!\n");
           if (!isdir (file_fd))
             success = archive_ordinary_file (file_name, file_fd,
                                              archive_fd, write_error);
@@ -125,9 +108,9 @@ archive_file (char file_name[], size_t file_name_size,
           /* Nothing to do: don't try to archive the archive file. */
           success = true;
         }
-      printf("Ah hah ah hah\n");
+  
       close (file_fd);
-      printf("Here??\n");
+
       return success;
     }
   else
@@ -177,7 +160,6 @@ static bool
 archive_directory (char file_name[], size_t file_name_size, int file_fd,
                    int archive_fd, bool *write_error)
 {
-  printf("Reach here with %s %d %d %d\n",file_name, file_name_size, file_fd, archive_fd);
   size_t dir_len;
   bool success = true;
 

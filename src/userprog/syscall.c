@@ -81,6 +81,7 @@ void get_args(void *esp, int *args, int cnt)
 static void
 syscall_handler (struct intr_frame *f) 
 {
+  printf("Start syscall\n");
   int args[4];
   void *esp = f->esp;
   int call_num = get_arg(esp);
@@ -91,103 +92,138 @@ syscall_handler (struct intr_frame *f)
   }
   else if(call_num == SYS_EXIT)
   {
+    printf("Start readdir\n");
     get_args(esp, args, 1);
     exit(args[0]);
+    printf("End readdir\n");
   }
   else if(call_num == SYS_EXEC)
   {
+    printf("Start readdir\n");
     get_args(esp, args, 1);
     check_valid_str(args[0]);
     f->eax = exec(args[0]);
+    printf("End readdir\n");
   }
   else if(call_num == SYS_WAIT)
   {
+    printf("Start readdir\n");
     get_args(esp, args, 1);
     f->eax = wait(args[0]);
+    printf("End readdir\n");
   }
   else if(call_num == SYS_CREATE)
   {
+    printf("Start readdir\n");
     get_args(esp, args, 2);
     check_valid_str(args[0]);
     f->eax = create(args[0], args[1]);
+    printf("End readdir\n");
   }
   else if(call_num == SYS_REMOVE)
   {
+    printf("Start readdir\n");
     get_args(esp, args, 1);
     check_valid_str(args[0]);
     f->eax = remove(args[0]);
+    printf("End readdir\n");
   }
   else if(call_num == SYS_OPEN)
   {
+    printf("Start readdir\n");
     get_args(esp, args, 1);
     check_valid_str(args[0]);
     f->eax = open(args[0]);
+    printf("End readdir\n");
   }
   else if(call_num == SYS_FILESIZE)
   {
+    printf("Start readdir\n");
     get_args(esp, args, 1);
     f->eax = filesize(args[0]);
+    printf("End readdir\n");
   }
   else if(call_num == SYS_READ)
   {
+    printf("Start readdir\n");
     get_args(esp, args, 3);
     check_valid_buffer(args[1], args[2]);
     f->eax = read(args[0], args[1], args[2]);
+    printf("End readdir\n");
   }
   else if(call_num == SYS_WRITE)
   {
+    printf("Start readdir\n");
     get_args(esp, args, 3);
     check_valid_buffer(args[1], args[2]);
     f->eax = write(args[0], args[1], args[2]);
+    printf("End readdir\n");
   }
   else if(call_num == SYS_SEEK)
   {
+    printf("Start readdir\n");
     get_args(esp, args, 2);
     seek(args[0], args[1]);
+    printf("End readdir\n");
   }
   else if(call_num == SYS_TELL)
   {
+    printf("Start readdir\n");
     get_args(esp, args, 1);
     f->eax = tell(args[0]);
+    printf("End readdir\n");
   }
   else if(call_num == SYS_CLOSE)
   {
+    printf("Start readdir\n");
     get_args(esp, args, 1);
     close(args[0]);
+    printf("End readdir\n");
   }
   else if(call_num == SYS_CHDIR)
   {
+    printf("Start readdir\n");
     get_args(esp, args, 1);
     check_valid_str(args[0]);
     f->eax = chdir(args[0]);
+    printf("End readdir\n");
   }
   else if(call_num == SYS_MKDIR)
   {
+    printf("Start readdir\n");
     get_args(esp, args, 1);
     check_valid_str(args[0]);
     f->eax = mkdir(args[0]);
+    printf("End readdir\n");
   }
   else if(call_num == SYS_READDIR)
   {
+    printf("Start readdir\n");
     get_args(esp, args, 2);
     check_valid_str(args[1]);
     f->eax = readdir(args[0], args[1]);
+    printf("End readdir\n");
   }
   else if(call_num == SYS_ISDIR)
   {
+    printf("Start isdir\n");
     get_args(esp, args, 1);
     f->eax = isdir(args[0]);
+    printf("End isdir\n");
   }
   else if(call_num == SYS_INUMBER)
   {
+    printf("Start inumber\n");
     get_args(esp, args, 1);
     f->eax = inumber(args[0]);
+    printf("End inumber\n");
   }
   else
   {
   	printf("Not known (yet) syscall.\n");
   	thread_exit ();
   }
+  printf("End syscall\n");
 }
 
 void halt (void)
