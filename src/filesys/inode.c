@@ -414,6 +414,7 @@ inode_write_at (struct inode *inode, const void *buffer_, off_t size,
       if (chunk_size <= 0)
         break;
 
+      if(sector_idx == -1) printf("Yeah baby!\n");
       int cache_id = cache_load(sector_idx);
       cache[cache_id].accessed = true;
       cache[cache_id].dirty = true;
