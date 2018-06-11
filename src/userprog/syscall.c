@@ -354,7 +354,7 @@ bool chdir(const char *dir)
   free(file_name);
 
   if(new_dir == NULL) return false;
-
+  dir_close(thread_current()->current_dir);
   thread_current()->current_dir = new_dir;
   return true;
 }
