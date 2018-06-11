@@ -40,7 +40,7 @@ dir_open (struct inode *inode)
     {
       dir->inode = inode;
       dir->pos = 0;
-      printf("Dir opening %d\n",inode_get_inumber(dir->inode));
+      // printf("Dir opening %d\n",inode_get_inumber(dir->inode));
       return dir;
     }
   else
@@ -74,8 +74,8 @@ dir_close (struct dir *dir)
 {
   if (dir != NULL)
     {
-      if(dir->inode != NULL)
-        printf("Dir closing %d\n",inode_get_inumber(dir->inode));
+      // if(dir->inode != NULL)
+        // printf("Dir closing %d\n",inode_get_inumber(dir->inode));
       inode_close (dir->inode);
       free (dir);
     }
@@ -224,25 +224,25 @@ dir_remove (struct dir *dir, const char *name)
   struct inode *inode = inode_open (e.inode_sector);
   if (inode == NULL)
   {
-    printf("Checkpoint 1\n");
+    // printf("Checkpoint 1\n");
     goto done;
   }
 
   if(inode_get_inumber(inode) == ROOT_DIR_SECTOR)
   {
-    printf("Checkpoint 2\n");
+    // printf("Checkpoint 2\n");
     goto done;
   }
 
   if(inode_isdir(inode) && inode_get_open_cnt(inode) > 1)
   {
-    printf("Checkpoint 3: %d\n",inode_get_open_cnt(inode));
+    // printf("Checkpoint 3: %d\n",inode_get_open_cnt(inode));
     goto done;
   }
 
   if(inode_isdir(inode) && !dir_is_empty(inode))
   {
-    printf("Checkpoint 4\n");
+    // printf("Checkpoint 4\n");
     goto done;
   }
 
@@ -250,12 +250,12 @@ dir_remove (struct dir *dir, const char *name)
   e.in_use = false;
   if (inode_write_at (dir->inode, &e, sizeof e, ofs) != sizeof e) 
   {
-    printf("Checkpoint 5\n");
+    // printf("Checkpoint 5\n");
     goto done;
   }
 
   /* Remove inode. */
-  printf("Remove child %s from %d\n",name, (inode_get_inumber(dir_get_inode(dir))));
+  // printf("Remove child %s from %d\n",name, (inode_get_inumber(dir_get_inode(dir))));
   inode_remove (inode);
   success = true;
 
