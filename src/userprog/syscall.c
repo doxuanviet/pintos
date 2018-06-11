@@ -152,11 +152,11 @@ syscall_handler (struct intr_frame *f)
   }
   else if(call_num == SYS_WRITE)
   {
-    printf("Start SYS_WRITE\n");
+    // printf("Start SYS_WRITE\n");
     get_args(esp, args, 3);
     check_valid_buffer(args[1], args[2]);
     f->eax = write(args[0], args[1], args[2]);
-    printf("End SYS_WRITE\n");
+    // printf("End SYS_WRITE\n");
   }
   else if(call_num == SYS_SEEK)
   {
