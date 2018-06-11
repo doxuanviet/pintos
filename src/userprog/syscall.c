@@ -358,10 +358,14 @@ bool chdir(const char *dir)
 
   free(file_name);
 
-  if(new_dir == NULL) return false;
+  if(new_dir == NULL)
+  {
+    print("END CHDIR 4\n");
+    return false;
+  }
   dir_close(thread_current()->current_dir);
   thread_current()->current_dir = new_dir;
-  printf("END CHDIR 4\n");
+  printf("END CHDIR 5\n");
   return true;
 }
 
