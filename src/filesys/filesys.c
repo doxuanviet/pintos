@@ -83,6 +83,7 @@ struct dir *get_parent_dir(const char *name, char **file_name)
 bool
 filesys_create (const char *name, off_t initial_size, bool is_dir) 
 {
+  printf("\t\t\tWrap\n");
   if(strlen(name) == 0) return false;
   block_sector_t inode_sector = 0;
   char *file_name = NULL;
@@ -98,6 +99,7 @@ filesys_create (const char *name, off_t initial_size, bool is_dir)
   dir_close (dir);
   free(file_name);
 
+  printf("\t\t\tUnwrap\n");
   return success;
 }
 
