@@ -229,6 +229,7 @@ bool create (const char * file , unsigned initial_size )
   lock_acquire(&filesys_lock);
   bool res = filesys_create(file, initial_size, false);
   lock_release(&filesys_lock);
+  printf("END CREATE FILE\n");
   return res;
 }
 bool remove (const char * file )
@@ -247,6 +248,7 @@ int open (const char * file )
   if(f == NULL)
   {
     lock_release(&filesys_lock);
+    printf("END OPEN\n");
     return -1;
   }
   if(inode_isdir(file_get_inode(f)))
@@ -256,6 +258,7 @@ int open (const char * file )
   }
   struct file_descriptor *file_desc = process_add_fd(f, dir);
   lock_release(&filesys_lock);
+  printf("END OPEN\n");
   return file_desc->fd;
 }
 int filesize (int fd )
@@ -359,7 +362,9 @@ bool chdir(const char *dir)
 bool mkdir(const char *dir)
 {
   printf("MKDIR\n");
-  return filesys_create(dir, 0, true);
+  bool res = filesys_create(dir, 0, true);
+  printf("END MKDIR\n");
+  return res;
 }
 
 bool readdir(int fd, const char *name)
