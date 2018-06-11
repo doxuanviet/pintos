@@ -73,12 +73,19 @@ make_tar_archive (const char *archive_name, char *files[], size_t file_cnt)
       strlcpy (file_name, files[i], sizeof file_name);
       if (!archive_file (file_name, sizeof file_name,
                          archive_fd, &write_error))
+      {
+        printf("ERROR at 1\n");
         success = false;
+      }
+        
     }
 
   if (!do_write (archive_fd, zeros, 512, &write_error)
-      || !do_write (archive_fd, zeros, 512, &write_error)) 
+      || !do_write (archive_fd, zeros, 512, &write_error))
+  {
+    printf("ERROR at 2\n");
     success = false;
+  }
 
   close (archive_fd);
 
