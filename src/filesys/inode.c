@@ -123,7 +123,7 @@ bool inode_expand(struct inode *ind, off_t length)
   cur_sector++;
   for(; cur_sector<=DIRECT_LIMIT; cur_sector++)
   {
-    free_map_allocate(1, &ind->data.ptr[cur_sector - 1]);
+    if(!free_map_allocate(1, &ind->data.ptr[cur_sector - 1])) printf("Free map alloc failed.\n");
     block_write(fs_device, ind->data.ptr[cur_sector - 1], zeroes);
     if(cur_sector == target_sector)
       {
@@ -135,7 +135,7 @@ bool inode_expand(struct inode *ind, off_t length)
 
   // Doubly indirect allocation.
   if(cur_sector == DIRECT_LIMIT + 1)
-    free_map_allocate(1, &ind->data.ptr[DIRECT_LIMIT]);
+    if(!free_map_allocate(1, &ind->data.ptr[DIRECT_LIMIT])) printf("Free map alloc failed.\n");
 
   struct indirect_sector doubly_indirect, cur_indirect;
 
@@ -146,7 +146,7 @@ bool inode_expand(struct inode *ind, off_t length)
     int data_id = (cur_sector - DIRECT_LIMIT - 1)/128;
     int indirect_id = (cur_sector - DIRECT_LIMIT - 1)%128;
     if(indirect_id == 0)
-      free_map_allocate(fs_device, &doubly_indirect.ptr[data_id]);
+      if(!free_map_allocate(fs_device, &doubly_indirect.ptr[data_id])) printf("Free map alloc failed.\n");
     if(old_data_id != data_id)
     {
       if(old_data_id != -1)
@@ -155,7 +155,7 @@ bool inode_expand(struct inode *ind, off_t length)
       block_read(fs_device, doubly_indirect.ptr[data_id], &cur_indirect);
     }
 
-    free_map_allocate(1, &cur_indirect.ptr[indirect_id]);
+    if(!free_map_allocate(1, &cur_indirect.ptr[indirect_id])) printf("Free map alloc failed.\n");
     block_write(fs_device, cur_indirect.ptr[indirect_id], zeroes);
     old_data_id = data_id;
     if(cur_sector == target_sector)
@@ -414,7 +414,6 @@ inode_write_at (struct inode *inode, const void *buffer_, off_t size,
       if (chunk_size <= 0)
         break;
 
-      if(sector_idx == -1) printf("Yeah baby!\n");
       int cache_id = cache_load(sector_idx);
       cache[cache_id].accessed = true;
       cache[cache_id].dirty = true;
