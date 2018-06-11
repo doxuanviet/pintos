@@ -248,7 +248,7 @@ int open (const char * file )
   if(f == NULL)
   {
     lock_release(&filesys_lock);
-    printf("END OPEN\n");
+    printf("END OPEN 1\n");
     return -1;
   }
   if(inode_isdir(file_get_inode(f)))
@@ -258,7 +258,7 @@ int open (const char * file )
   }
   struct file_descriptor *file_desc = process_add_fd(f, dir);
   lock_release(&filesys_lock);
-  printf("END OPEN\n");
+  printf("END OPEN 2\n");
   return file_desc->fd;
 }
 int filesize (int fd )
