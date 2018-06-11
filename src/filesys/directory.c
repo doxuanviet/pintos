@@ -40,7 +40,7 @@ dir_open (struct inode *inode)
     {
       dir->inode = inode;
       dir->pos = 0;
-      // printf("Dir opening %d\n",inode_get_inumber(dir->inode));
+      printf("Dir opening %d\n",inode_get_inumber(dir->inode));
       return dir;
     }
   else
@@ -74,8 +74,8 @@ dir_close (struct dir *dir)
 {
   if (dir != NULL)
     {
-      // if(dir->inode != NULL)
-        // printf("Dir closing %d\n",inode_get_inumber(dir->inode));
+      if(dir->inode != NULL)
+        printf("Dir closing %d\n",inode_get_inumber(dir->inode));
       inode_close (dir->inode);
       free (dir);
     }
@@ -114,7 +114,6 @@ lookup (const struct dir *dir, const char *name,
           *ofsp = ofs;
         return true;
       }
-    // if(e.in_use && ep != NULL && ofsp != NULL) printf("Lookup name %s\n", e.name);
   }
   return false;
 }
@@ -255,7 +254,7 @@ dir_remove (struct dir *dir, const char *name)
   }
 
   /* Remove inode. */
-  // printf("Remove child %s from %d\n",name, (inode_get_inumber(dir_get_inode(dir))));
+  printf("Remove child %s from %d\n",name, (inode_get_inumber(dir_get_inode(dir))));
   inode_remove (inode);
   success = true;
 
@@ -288,11 +287,11 @@ dir_readdir (struct dir *dir, char name[NAME_MAX + 1])
 struct dir *dir_go_up(struct dir *dir)
 {
   struct inode *ind = dir_get_inode(dir);
+  dir_close(dir);
   if(!ind) return NULL;
   block_sector_t parent_id = inode_get_parent(ind);
   ind = inode_open(parent_id);
   if(!ind) return NULL;
-  dir_close(dir);
   return dir_open(ind);
 }
 
@@ -301,7 +300,11 @@ struct dir *dir_go_down(struct dir *dir, const char *name)
 {
   if(strcmp(name, ".") == 0) return dir;
   struct inode *child;
-  if(!dir_lookup(dir, name, &child)) return NULL;
+  if(!dir_lookup(dir, name, &child))
+  {
+    dir_close(dir);
+    return NULL;
+  }
   dir_close(dir);
   return dir_open(child);
 }
