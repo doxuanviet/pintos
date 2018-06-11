@@ -40,7 +40,7 @@ dir_open (struct inode *inode)
     {
       dir->inode = inode;
       dir->pos = 0;
-      // printf("Dir opening %d\n",inode_get_inumber(dir->inode));
+      printf("Dir opening %d\n",inode_get_inumber(dir->inode));
       return dir;
     }
   else
@@ -75,7 +75,7 @@ dir_close (struct dir *dir)
   if (dir != NULL)
     {
       if(dir->inode != NULL)
-        // printf("Dir closing %d\n",inode_get_inumber(dir->inode));
+        printf("Dir closing %d\n",inode_get_inumber(dir->inode));
       inode_close (dir->inode);
       free (dir);
     }
